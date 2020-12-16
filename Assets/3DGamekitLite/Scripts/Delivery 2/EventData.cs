@@ -37,7 +37,7 @@ public class PlayerLifeLostEvent : EventData    // Player lost life position & e
     Vector3 position;
     string enemy;
 }
-public class SwitchsTimeEvent : EventData    // Time that player takes to press each switch
+public class SwitchesTimeEvent : EventData    // Time that player takes to press each switch
 {
     int switch_id;
     float time;
