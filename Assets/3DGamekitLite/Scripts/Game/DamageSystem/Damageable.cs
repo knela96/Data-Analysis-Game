@@ -37,10 +37,13 @@ namespace Gamekit3D
 
         System.Action schedule;
 
+        EventHandler eventHandler;
+
         void Start()
         {
             ResetDamage();
             m_Collider = GetComponent<Collider>();
+            eventHandler = GameObject.Find("EventHandler").GetComponent<EventHandler>();
         }
 
         void Update()
