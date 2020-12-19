@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 
 public class Heatmap : MonoBehaviour
@@ -18,6 +19,8 @@ public class Heatmap : MonoBehaviour
     public List<EventData> EventsList = new List<EventData>();
 
     public EventFilter current_filter;
+    public ENEMY_TYPE enemy_filter;
+    public SURFACE_TYPE surface_filter;
 
     public Gradient ColorGradient;
 
@@ -44,13 +47,27 @@ public class Heatmap : MonoBehaviour
                         x = ((PlayerDeathEvent)eventData).position.x;
                         y = ((PlayerDeathEvent)eventData).position.z;
                         break;
-                    case (EventFilter.LifeLost):
-                        x = ((PlayerLifeLostEvent)eventData).position.x;
-                        y = ((PlayerLifeLostEvent)eventData).position.z;
-                        break;
                     case (EventFilter.Fall):
                         x = ((PlayerFallsEvent)eventData).position.x;
                         y = ((PlayerFallsEvent)eventData).position.z;
+                        break;
+                    case (EventFilter.Objects):
+                        x = ((ObjectsDestroyedEvent)eventData).position.x;
+                        y = ((ObjectsDestroyedEvent)eventData).position.z;
+                        break;
+                    case (EventFilter.LifeLost):
+                        if (((PlayerLifeLostEvent)eventData).type == enemy_filter || ((PlayerLifeLostEvent)eventData).type == ENEMY_TYPE.ALL)
+                        {
+                            x = ((PlayerLifeLostEvent)eventData).position.x;
+                            y = ((PlayerLifeLostEvent)eventData).position.z;
+                        }
+                        break;
+                    case (EventFilter.EnemyDeath):
+                        if(((EnemyKillsEvent)eventData).type == enemy_filter || ((EnemyKillsEvent)eventData).type == ENEMY_TYPE.ALL)
+                        {
+                            x = ((EnemyKillsEvent)eventData).position.x;
+                            y = ((EnemyKillsEvent)eventData).position.z;
+                        }
                         break;
                 };
 
@@ -91,8 +108,8 @@ public class Heatmap : MonoBehaviour
 
     void SpawnCube(int x, int y, int count)
     {
-        x = (int)(x * cubeSize + map_originX + cubeSize / 2);
-        y = (int)(y * cubeSize + map_originY + cubeSize / 2);
+        x = (int)(x * cubeSize + map_originX);
+        y = (int)(y * cubeSize + map_originY);
         Vector3 pos = new Vector3(x, GetHeight(x, y), y);
         GameObject cube = Instantiate(heatMapCube, pos, Quaternion.identity);
         instancedCubes.Add(cube);
@@ -129,7 +146,8 @@ public class Heatmap : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             CountEvents();
-            PlayerPositionEvent pos1 = new PlayerPositionEvent(0,, GameObject.Find("Ellen").transform.position);
+            DateTime time = new DateTime();
+            PlayerPositionEvent pos1 = new PlayerPositionEvent(0,time, GameObject.Find("Ellen").transform.position);
             EventsList.Add(pos1);
 
             foreach (var obj in instancedCubes)

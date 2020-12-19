@@ -16,12 +16,14 @@ public enum EventFilter
 };
 public enum ENEMY_TYPE
 {
-    SPITTER = 0,
+    ALL,
+    SPITTER,
     CHOMPER
 }
 public enum SURFACE_TYPE
 {
-    AIR = 0,
+    ALL,
+    FREE_FALL,
     ACID
 }
 public class EventData
@@ -81,21 +83,21 @@ public class EnemyKillsEvent : EventData    // Enemy position where killed the p
 {
     public EnemyKillsEvent(uint ev, DateTime time, Vector3 enemy_pos, ENEMY_TYPE enemy_name) : base(ev, time, EventFilter.EnemyDeath)
     {
-        enemy_position = enemy_pos;
-        enemy = enemy_name;
+        position = enemy_pos;
+        type = enemy_name;
     }
-    public Vector3 enemy_position;
-    ENEMY_TYPE enemy;
+    public Vector3 position;
+    public ENEMY_TYPE type;
 }
 public class PlayerLifeLostEvent : EventData    // Player lost life position & enemy that damaged you | Also used for Heatmap
 {
     public PlayerLifeLostEvent(uint ev, DateTime time, Vector3 pos, ENEMY_TYPE enemy_name) : base(ev, time, EventFilter.LifeLost)
     {
         position = pos;
-        enemy = enemy_name;
+        type = enemy_name;
     }
     public Vector3 position;
-    ENEMY_TYPE enemy;
+    public ENEMY_TYPE type;
 }
 public class SwitchesTimeEvent : EventData    // Time that player takes to press each switch
 {
@@ -121,7 +123,7 @@ public class ObjectsDestroyedEvent : EventData   // Objects destroyed & current 
     {
         global_time = ev_time;
     }
-    Vector3 position;
+    public Vector3 position;
     float global_time;
 }
 public class FindKeyEvent : EventData   // Time to find the key
