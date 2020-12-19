@@ -40,7 +40,7 @@ public class Heatmap : MonoBehaviour
                         x = ((PlayerPositionEvent)eventData).position.x;
                         y = ((PlayerPositionEvent)eventData).position.z;
                         break;
-                    case (EventFilter.Death):
+                    case (EventFilter.PlayerDeath):
                         x = ((PlayerDeathEvent)eventData).position.x;
                         y = ((PlayerDeathEvent)eventData).position.z;
                         break;
@@ -129,8 +129,7 @@ public class Heatmap : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             CountEvents();
-            PlayerPositionEvent pos1 = new PlayerPositionEvent();
-            pos1.position = GameObject.Find("Ellen").transform.position;
+            PlayerPositionEvent pos1 = new PlayerPositionEvent(0,, GameObject.Find("Ellen").transform.position);
             EventsList.Add(pos1);
 
             foreach (var obj in instancedCubes)
