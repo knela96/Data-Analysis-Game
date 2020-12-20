@@ -15,7 +15,8 @@ public class EventHandler : MonoBehaviour
 
     // Per no posar-ho tot a una mateix llista que englobi tots els events de tots els tipus
     // Podriem crear diferents classes que siguin de tipus de llistes i despres a dins de cada classe posar les variabels que necesitem per a cadascu
-    // Per exemple: class PositionEvent {...}, despres crear una llista List<PositionEvent> i guardar els events de posicio del jugador, mort del jugador i altres coses relacionades amb la posicio
+    // Per exemple: class PositionEvent {...}, despres crear una llista List<PositionEvent> o List<TimerEvent> 
+    // i guardar els events de posicio del jugador, mort del jugador i altres coses relacionades amb la posicio o els events amb time 
     void Start()
     {
         CreateLists();
@@ -35,8 +36,7 @@ public class EventHandler : MonoBehaviour
 
     void UpdateInfoEvent()
     {
-        // Calling this event every X seconds (in our case 3 seconds)
-        //AddEvent(EventFilter.Position);
+        // Calling this event every X seconds (in our case 3 seconds) to save the current position and create a path
         AddPlayerPositionEvent();
     }
 
@@ -52,12 +52,23 @@ public class EventHandler : MonoBehaviour
         events.Add(e);
         //position_events.Add(e);
     }
-
     public void AddPlayerDeathEvent()
     {
         PlayerDeathEvent e = new PlayerDeathEvent((uint)events.Count, System.DateTime.Now, ellen.transform.position);
         events.Add(e);
         //position_events.Add(e);
+    }
+    public void AddEnemyKilledEvent(GameObject enemy)
+    {
+        EnemyKillsEvent e = new EnemyKillsEvent((uint)events.Count, System.DateTime.Now, enemy.transform.position, ENEMY_TYPE.ALL);
+        events.Add(e);
+    }
+
+    public void AddKeyTimerEvent(float time)
+    {
+        // Don't know how to save the timer
+        FindKeyEvent e = new FindKeyEvent((uint)events.Count, System.DateTime.Now, time);
+        events.Add(e);
     }
 
 
