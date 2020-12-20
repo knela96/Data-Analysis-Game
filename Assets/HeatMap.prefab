@@ -43,16 +43,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91288fdd0b8d9ad46999e27e1d07f571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GridSizeX: 200
-  GridSizeY: 200
-  map_originX: -34
-  map_originY: -40
   cubeSize: 1
   heatMapCube: {fileID: 1558035432674445453, guid: d1e65913abf29514b80629ed5b17855b,
     type: 3}
   transparency: 0.75
   instancedCubes: []
+  instancedArrows: []
   current_filter: 0
+  enemy_filter: 0
+  surface_filter: 0
   ColorGradient:
     serializedVersion: 2
     key0: {r: 0, g: 0, b: 1, a: 1}
@@ -82,4 +81,7 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 5
     m_NumAlphaKeys: 2
-  maxCounts: 50
+  heatMaxValue: 50
+  arrow: {fileID: 3826112368632660323, guid: a898e2e5467ccd741a0ad64fefcc2c3b, type: 3}
+  ArrowColor: {r: 0, g: 0, b: 0, a: 0}
+  maxArrows: 200
