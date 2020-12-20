@@ -10,7 +10,12 @@ public class EventHandler : MonoBehaviour
     public static EventHandler eventhandler;
 
     public List<EventData> events;
-    public List<PlayerPositionEvent> position_events;
+
+    public List<PositionEvent> position_events;
+
+    // Per no posar-ho tot a una mateix llista que englobi tots els events de tots els tipus
+    // Podriem crear diferents classes que siguin de tipus de llistes i despres a dins de cada classe posar les variabels que necesitem per a cadascu
+    // Per exemple: class PositionEvent {...}, despres crear una llista List<PositionEvent> i guardar els events de posicio del jugador, mort del jugador i altres coses relacionades amb la posicio
     void Start()
     {
         CreateLists();
@@ -38,14 +43,14 @@ public class EventHandler : MonoBehaviour
     void CreateLists()
     {
         events = new List<EventData>();
-        position_events = new List<PlayerPositionEvent>();
+        //position_events = new List<PositionEvent>();
     }
 
     public void AddPlayerPositionEvent()
     {
         PlayerPositionEvent e = new PlayerPositionEvent((uint)events.Count, System.DateTime.Now, ellen.transform.position);
         events.Add(e);
-        position_events.Add(e);
+        //position_events.Add(e);
     }
 
     public void AddPlayerDeathEvent()
@@ -54,6 +59,8 @@ public class EventHandler : MonoBehaviour
         events.Add(e);
         //position_events.Add(e);
     }
+
+
 
     //public void AddEvent(EventFilter filter)
     //{

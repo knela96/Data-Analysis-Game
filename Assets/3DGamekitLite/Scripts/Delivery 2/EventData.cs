@@ -153,3 +153,16 @@ public class PlayerPathEvent : EventData    // Player position and rotation for 
     Vector3 position;
     Vector3 orientation;
 }
+
+// ---------------------
+
+// classes for lists
+public class PositionEvent : EventData
+{
+    Vector3 position;
+
+    public PositionEvent(uint ev, DateTime time, Vector3 pos) : base(ev, time, EventFilter.Position)
+    {
+        position = pos;
+    }
+}
