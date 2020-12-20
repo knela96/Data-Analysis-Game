@@ -111,7 +111,7 @@ public class Reader : MonoBehaviour
             FallsDataReturn.x = float.Parse(lineData[0], CultureInfo.InvariantCulture);
             FallsDataReturn.y = float.Parse(lineData[1], CultureInfo.InvariantCulture);
             FallsDataReturn.z = float.Parse(lineData[2], CultureInfo.InvariantCulture);
-            FallsDataReturn.surface = int.Parse(lineData[4]);
+            FallsDataReturn.surface = int.Parse(lineData[3]);
 
             arrFalls.Add(FallsDataReturn);
         }
@@ -131,7 +131,7 @@ public class Reader : MonoBehaviour
             EnemyKillsDataReturn.x = float.Parse(lineData[0], CultureInfo.InvariantCulture);
             EnemyKillsDataReturn.y = float.Parse(lineData[1], CultureInfo.InvariantCulture);
             EnemyKillsDataReturn.z = float.Parse(lineData[2], CultureInfo.InvariantCulture);
-            EnemyKillsDataReturn.enemy = int.Parse(lineData[4]);
+            EnemyKillsDataReturn.enemy = int.Parse(lineData[3]);
 
             arrEnemyKills.Add(EnemyKillsDataReturn);
         }
@@ -151,7 +151,7 @@ public class Reader : MonoBehaviour
             LifeLostDataReturn.x = float.Parse(lineData[0], CultureInfo.InvariantCulture);
             LifeLostDataReturn.y = float.Parse(lineData[1], CultureInfo.InvariantCulture);
             LifeLostDataReturn.z = float.Parse(lineData[2], CultureInfo.InvariantCulture);
-            LifeLostDataReturn.enemy = int.Parse(lineData[4]);
+            LifeLostDataReturn.enemy = int.Parse(lineData[3]);
 
             arrLifeLost.Add(LifeLostDataReturn);
         }
@@ -168,8 +168,8 @@ public class Reader : MonoBehaviour
         for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
         {
             lineData = (lines[i].Trim()).Split(","[0]);
-            SwitchesTimeDataReturn.current_switch_id = int.Parse(lineData[1]);
-            SwitchesTimeDataReturn.global_time = int.Parse(lineData[2]);
+            SwitchesTimeDataReturn.current_switch_id = int.Parse(lineData[0]);
+            SwitchesTimeDataReturn.global_time = int.Parse(lineData[1]);
 
             arrSwitchesTime.Add(SwitchesTimeDataReturn);
         }
@@ -186,7 +186,7 @@ public class Reader : MonoBehaviour
         for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
         {
             lineData = (lines[i].Trim()).Split(","[0]);
-            FindKeyDataReturn.global_time = float.Parse(lineData[1]);
+            FindKeyDataReturn.global_time = float.Parse(lineData[0]);
 
             arrFindKey.Add(FindKeyDataReturn);
         }
@@ -203,7 +203,7 @@ public class Reader : MonoBehaviour
         for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
         {
             lineData = (lines[i].Trim()).Split(","[0]);
-            FinishDataReturn.global_time = float.Parse(lineData[1]);
+            FinishDataReturn.global_time = float.Parse(lineData[0]);
 
             arrFinish.Add(FinishDataReturn);
         }
