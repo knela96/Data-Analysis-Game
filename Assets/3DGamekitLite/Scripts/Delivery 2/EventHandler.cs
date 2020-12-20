@@ -13,6 +13,33 @@ public class EventHandler : MonoBehaviour
 
     public List<PositionEvent> position_events;
 
+
+    static EventHandler mInstance;
+    private GameObject player;
+
+    public static EventHandler Instance
+    {
+        get
+        {
+            if (mInstance == null)
+            {
+                GameObject go = new GameObject("Event Handler");
+                mInstance = go.AddComponent<EventHandler>();
+            }
+            return mInstance;
+        }
+    }
+
+    private void Awake()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+    }
+
+    public void SendEventData(object eventData)
+    {
+        player.SendMessage("ReceiveEvent", eventData);
+    }
+
     // Per no posar-ho tot a una mateix llista que englobi tots els events de tots els tipus
     // Podriem crear diferents classes que siguin de tipus de llistes i despres a dins de cada classe posar les variabels que necesitem per a cadascu
     // Per exemple: class PositionEvent {...}, despres crear una llista List<PositionEvent> o List<TimerEvent> 
@@ -37,7 +64,7 @@ public class EventHandler : MonoBehaviour
     void UpdateInfoEvent()
     {
         // Calling this event every X seconds (in our case 3 seconds) to save the current position and create a path
-        AddPlayerPositionEvent();
+       Instance.SendEventData(AddPlayerPositionEvent());
     }
 
     void CreateLists()
@@ -46,10 +73,10 @@ public class EventHandler : MonoBehaviour
         //position_events = new List<PositionEvent>();
     }
 
-    public void AddPlayerPositionEvent()
+    public object AddPlayerPositionEvent()
     {
-        PlayerPositionEvent e = new PlayerPositionEvent((uint)events.Count, System.DateTime.Now, ellen.transform.position);
-        events.Add(e);
+        object e = new PlayerPositionEvent((uint)events.Count, System.DateTime.Now, ellen.transform.position);
+        return e;
         //position_events.Add(e);
     }
     public void AddPlayerDeathEvent()
@@ -107,5 +134,6 @@ public class EventHandler : MonoBehaviour
 
     //    }
     //}
+
 
 }
