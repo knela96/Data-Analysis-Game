@@ -11,12 +11,35 @@ public class EventHandler : MonoBehaviour
 
     public List<EventData> events;
 
-    public List<PositionEvent> position_events;
+    public float timeStart = 0;
 
     // Per no posar-ho tot a una mateix llista que englobi tots els events de tots els tipus
     // Podriem crear diferents classes que siguin de tipus de llistes i despres a dins de cada classe posar les variabels que necesitem per a cadascu
     // Per exemple: class PositionEvent {...}, despres crear una llista List<PositionEvent> o List<TimerEvent> 
     // i guardar els events de posicio del jugador, mort del jugador i altres coses relacionades amb la posicio o els events amb time 
+
+    private void OnEnable()
+    {
+        Damageable.PlayerDeathEvent += AddPlayerDeathEvent;
+        Damageable.EnemyDeathEvent += AddEnemyKilledEvent;
+        Damageable.PlayerHurtEvent += AddPlayerLifeLostEvent;
+        DeathVolume.PlayerFallsEvent += AddPlayerFallEvent;
+        InteractOnTrigger.SwitchTimerEvent += AddSwitchTimeEvent;
+        InteractOnTrigger.LevelCompleteEvent += AddLevelCompleteEvent;
+        InteractOnTrigger.KeyTimerEvent += AddKeyTimerEvent;
+    }
+
+    private void OnDisable()
+    {
+        Damageable.PlayerDeathEvent -= AddPlayerDeathEvent;
+        Damageable.EnemyDeathEvent -= AddEnemyKilledEvent;
+        Damageable.PlayerHurtEvent -= AddPlayerLifeLostEvent;
+        DeathVolume.PlayerFallsEvent -= AddPlayerFallEvent;
+        InteractOnTrigger.SwitchTimerEvent -= AddSwitchTimeEvent;
+        InteractOnTrigger.LevelCompleteEvent -= AddLevelCompleteEvent;
+        InteractOnTrigger.KeyTimerEvent -= AddKeyTimerEvent;
+    }
+
     void Start()
     {
         CreateLists();
@@ -43,20 +66,17 @@ public class EventHandler : MonoBehaviour
     void CreateLists()
     {
         events = new List<EventData>();
-        //position_events = new List<PositionEvent>();
     }
 
     public void AddPlayerPositionEvent()
     {
         PlayerPositionEvent e = new PlayerPositionEvent((uint)events.Count, System.DateTime.Now, ellen.transform.position);
         events.Add(e);
-        //position_events.Add(e);
     }
     public void AddPlayerDeathEvent()
     {
         PlayerDeathEvent e = new PlayerDeathEvent((uint)events.Count, System.DateTime.Now, ellen.transform.position);
         events.Add(e);
-        //position_events.Add(e);
     }
     public void AddEnemyKilledEvent(GameObject enemy)
     {
@@ -71,7 +91,45 @@ public class EventHandler : MonoBehaviour
         events.Add(e);
     }
 
+    public void AddPlayerLifeLostEvent(ENEMY_TYPE type)
+    {
+        PlayerLifeLostEvent e = new PlayerLifeLostEvent((uint)events.Count, System.DateTime.Now, ellen.transform.position, type);
+        events.Add(e);
+    }
 
+    public void AddPlayerFallEvent(SURFACE_TYPE type)
+    {
+        PlayerFallsEvent e = new PlayerFallsEvent((uint)events.Count, System.DateTime.Now, ellen.transform.position, type);
+        events.Add(e);
+    }
+
+    public void AddSwitchTimeEvent(int switch_id, float time)
+    {
+        SwitchesTimeEvent e = new SwitchesTimeEvent((uint)events.Count, System.DateTime.Now, switch_id, time);
+        events.Add(e);
+    }
+
+    public void AddLevelCompleteEvent(float time)
+    {
+        TimeToFinishEvent e = new TimeToFinishEvent((uint)events.Count, System.DateTime.Now, time);
+        events.Add(e);
+    }
+
+    public void AddFindKeyEvent(float time)
+    {
+        FindKeyEvent e = new FindKeyEvent((uint)events.Count, System.DateTime.Now, time);
+        events.Add(e);
+    }
+
+    public void StartTimer()
+    {
+        timeStart = Time.time;
+    }
+
+    public float GetStartTime()
+    {
+        return timeStart;
+    }
 
     //public void AddEvent(EventFilter filter)
     //{

@@ -63,10 +63,6 @@ public class Heatmap : MonoBehaviour
                             y = ((PlayerFallsEvent)eventData).position.z;
                         }
                         break;
-                    case (EventFilter.Objects):
-                        x = ((ObjectsDestroyedEvent)eventData).position.x;
-                        y = ((ObjectsDestroyedEvent)eventData).position.z;
-                        break;
                     case (EventFilter.LifeLost):
                         if (((PlayerLifeLostEvent)eventData).type == enemy_filter || ((PlayerLifeLostEvent)eventData).type == ENEMY_TYPE.ALL)
                         {
