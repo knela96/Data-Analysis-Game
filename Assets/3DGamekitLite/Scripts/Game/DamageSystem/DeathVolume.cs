@@ -9,6 +9,8 @@ namespace Gamekit3D
     {
         public new AudioSource audio;
 
+        public delegate void PlayerFalls(SURFACE_TYPE type);
+        public static PlayerFalls PlayerFallsEvent;
 
         void OnTriggerEnter(Collider other)
         {
@@ -16,6 +18,13 @@ namespace Gamekit3D
             if (pc != null)
             {
                 pc.Die(new Damageable.DamageMessage());
+
+                if (gameObject.name == "DeathVolume") // Falls out of the map
+                    PlayerFallsEvent?.Invoke(SURFACE_TYPE.FREE_FALL);
+
+                else if (gameObject.name == "Acid") // Falls in acid
+                    PlayerFallsEvent?.Invoke(SURFACE_TYPE.ACID);
+
             }
             if (audio != null)
             {

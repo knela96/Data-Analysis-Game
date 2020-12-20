@@ -110,23 +110,6 @@ public class SwitchesTimeEvent : EventData    // Time that player takes to press
     int current_switch_id;
     float global_time;
 }
-public class TimePuzzleEvent : EventData    // Time to complete the puzzle
-{
-    public TimePuzzleEvent(uint ev, DateTime time, float ev_time) : base(ev, time, EventFilter.None)
-    {
-        global_time = ev_time;
-    }
-    float global_time;
-}
-public class ObjectsDestroyedEvent : EventData   // Objects destroyed & current destruction time
-{
-    public ObjectsDestroyedEvent(uint ev, DateTime time, Vector3 pos, float ev_time) : base(ev, time, EventFilter.Objects)
-    {
-        global_time = ev_time;
-    }
-    public Vector3 position;
-    float global_time;
-}
 public class FindKeyEvent : EventData   // Time to find the key
 {
     public FindKeyEvent(uint ev, DateTime time, float ev_time) : base(ev, time, EventFilter.None)
@@ -157,12 +140,12 @@ public class PlayerPathEvent : EventData    // Player position and rotation for 
 // ---------------------
 
 // classes for lists
-public class PositionEvent : EventData
-{
-    Vector3 position;
+//public class PositionEvent : EventData
+//{
+//    Vector3 position;
 
-    public PositionEvent(uint ev, DateTime time, Vector3 pos) : base(ev, time, EventFilter.Position)
-    {
-        position = pos;
-    }
-}
+//    public PositionEvent(uint ev, DateTime time, Vector3 pos) : base(ev, time, EventFilter.Position)
+//    {
+//        position = pos;
+//    }
+//}
