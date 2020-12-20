@@ -75,12 +75,12 @@ public class PlayerFallsEvent : EventData    // Player fall position & type of s
     public PlayerFallsEvent(uint ev, DateTime time, Vector3 pos, SURFACE_TYPE surface_name) : base(ev, time, EventFilter.Fall)
     {
         position = pos;
-        surface = surface_name;
+        surface_type = surface_name;
     }
     public Vector3 position;
-    SURFACE_TYPE surface;
+    public SURFACE_TYPE surface_type;
 }
-public class EnemyKillsEvent : EventData    // Enemy position where killed the player & enemy type name
+public class EnemyKillsEvent : EventData    // Enemy position where killed by the player & enemy type name
 {
     public EnemyKillsEvent(uint ev, DateTime time, Vector3 enemy_pos, ENEMY_TYPE enemy_name) : base(ev, time, EventFilter.EnemyDeath)
     {
@@ -150,8 +150,8 @@ public class PlayerPathEvent : EventData    // Player position and rotation for 
         position = pos;
         orientation = orient;
     }
-    Vector3 position;
-    Vector3 orientation;
+    public Vector3 position;
+    public Vector3 orientation;
 }
 
 // ---------------------
