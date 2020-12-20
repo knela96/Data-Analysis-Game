@@ -39,6 +39,15 @@ namespace Gamekit3D
 
         EventHandler eventHandler;
 
+        public delegate void PlayerDeath();
+        public static PlayerDeath PlayerDeathEvent;
+
+        public delegate void EnemyDeath(GameObject enemy);
+        public static EnemyDeath EnemyDeathEvent;
+
+        public delegate void PlayerHurt(ENEMY_TYPE type);
+        public static PlayerHurt PlayerHurtEvent;
+
         void Start()
         {
             ResetDamage();
@@ -100,9 +109,26 @@ namespace Gamekit3D
             currentHitPoints -= data.amount;
 
             if (currentHitPoints <= 0)
+            {
                 schedule += OnDeath.Invoke; //This avoid race condition when objects kill each other.
+                if (this.gameObject.layer == 9) // Player
+                    PlayerDeathEvent?.Invoke();
+
+                else if (this.gameObject.layer == 23) // Enemy
+                    EnemyDeathEvent?.Invoke(this.gameObject);
+            }
+                
             else
+            {
+                if (data.damager.gameObject.name == "BodyDamager")
+                    PlayerHurtEvent?.Invoke(ENEMY_TYPE.CHOMPER);
+
+                else if (data.damager.gameObject.name == "Spit(Clone)")
+                    PlayerHurtEvent?.Invoke(ENEMY_TYPE.SPITTER);
+
                 OnReceiveDamage.Invoke();
+
+            }
 
             var messageType = currentHitPoints <= 0 ? MessageType.DEAD : MessageType.DAMAGED;
 

@@ -13,6 +13,21 @@ namespace Gamekit3D
         new Collider collider;
         public InventoryController.InventoryChecker[] inventoryChecks;
 
+        public float timerSwitch1 = 0;
+        public float timerSwitch2 = 0;
+        public float timerSwitch3 = 0;
+        public float finalTimer = 0;
+        public float timerKey = 0;
+
+        public delegate void SwitchTimer(int id, float time);
+        public static SwitchTimer SwitchTimerEvent;
+
+        public delegate void LevelComplete(float time);
+        public static LevelComplete LevelCompleteEvent;
+
+        public delegate void KeyTimer(float time);
+        public static KeyTimer KeyTimerEvent;
+
         void Reset()
         {
             layers = LayerMask.NameToLayer("Everything");
@@ -25,6 +40,41 @@ namespace Gamekit3D
             if (0 != (layers.value & 1 << other.gameObject.layer))
             {
                 ExecuteOnEnter(other);
+
+                if (gameObject.name == "DoorSwitch1")
+                {
+                    timerSwitch1 = Time.time - EventHandler.eventhandler.GetStartTime();
+                    SwitchTimerEvent?.Invoke(1, timerSwitch1);
+                }
+
+                if (gameObject.name == "Switch")
+                {
+                    timerSwitch2 = Time.time - EventHandler.eventhandler.GetStartTime();
+                    SwitchTimerEvent?.Invoke(2, timerSwitch2);
+                }
+
+                if (gameObject.name == "Switch (1)")
+                {
+                    timerSwitch3 = Time.time - EventHandler.eventhandler.GetStartTime();
+                    SwitchTimerEvent?.Invoke(2, timerSwitch2);
+                }
+
+                if (gameObject.name == "InfoZone_InsideBox")
+                {
+                    timerSwitch1 = Time.time - EventHandler.eventhandler.GetStartTime();
+                    SwitchTimerEvent?.Invoke(1, timerSwitch1);
+                }
+
+                // Porta 1 = "PressurePad"
+                // Switch 1 = "DoorSwitch1"
+                // Switch 2 = "Switch"
+                // Switch 3 = "Switch (1)"
+
+                if (gameObject.name == "InfoZone_End")
+                {
+                    timerKey = Time.time - EventHandler.eventhandler.GetStartTime();
+                    KeyTimerEvent?.Invoke(timerKey);
+                }
             }
         }
 
