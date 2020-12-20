@@ -5,15 +5,18 @@ using UnityEngine.UI;
 
 public class ManageDropdowns : MonoBehaviour
 {
-    public GameObject toggle;
+    public GameObject toggle_heat;
+    public GameObject toggle_arrows;
     public GameObject enemy;
     public GameObject surface;
 
     public void Start()
     {
-        toggle.GetComponent<Toggle>().isOn = false;
+        toggle_heat.GetComponent<Toggle>().isOn = false;
+        toggle_arrows.GetComponent<Toggle>().isOn = false;
         enemy.SetActive(false);
         surface.SetActive(false);
+        Manage(0);
     }
 
     public void Manage(int val)
