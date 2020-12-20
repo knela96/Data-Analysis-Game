@@ -28,6 +28,7 @@ public enum SURFACE_TYPE
 }
 public class EventData
 {
+    public static EventData eventdata;
     protected uint event_id;
     protected DateTime timestamp;
     public EventFilter type;
@@ -51,6 +52,7 @@ public class EventData
         return JsonUtility.ToJson(this);
     }
 }
+
 public class PlayerPositionEvent : EventData     // Player current position | Also used for Heatmap --------- Should we create a timer for saving this position every 3 seconds ?
 {
     public PlayerPositionEvent(uint ev, DateTime time, Vector3 pos) : base(ev, time, EventFilter.Position)
@@ -59,12 +61,11 @@ public class PlayerPositionEvent : EventData     // Player current position | Al
     }
     public Vector3 position;
 }
-public class PlayerDeathEvent : EventData    // Player death position & enemy who killed you | Also used for Heatmap
+public class PlayerDeathEvent : EventData    // Player death position | Also used for Heatmap
 {
-    public PlayerDeathEvent(uint ev, DateTime time, Vector3 pos, ENEMY_TYPE enemy_name) : base(ev, time, EventFilter.PlayerDeath)
+    public PlayerDeathEvent(uint ev, DateTime time, Vector3 pos) : base(ev, time, EventFilter.PlayerDeath)
     {
         position = pos;
-        enemy = enemy_name;
     }
     public Vector3 position;
     ENEMY_TYPE enemy;
