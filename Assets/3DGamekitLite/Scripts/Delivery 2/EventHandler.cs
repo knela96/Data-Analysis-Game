@@ -13,9 +13,7 @@ public class EventHandler : MonoBehaviour
 
     public float timeStart = 0;
 
-
     static EventHandler mInstance;
-    private GameObject player;
 
     public static EventHandler Instance
     {
@@ -30,14 +28,9 @@ public class EventHandler : MonoBehaviour
         }
     }
 
-    private void Awake()
-    {
-        player = GameObject.FindGameObjectWithTag("Player");
-    }
-
     public void SendEventData(object eventData)
     {
-        player.SendMessage("ReceiveEvent", eventData);
+        ellen.SendMessage("ReceiveEvent", eventData);
     }
 
     // Per no posar-ho tot a una mateix llista que englobi tots els events de tots els tipus
@@ -67,6 +60,11 @@ public class EventHandler : MonoBehaviour
         InteractOnTrigger.KeyTimerEvent -= AddKeyTimerEvent;
     }
 
+    public void Awake()
+    {
+        ellen = GameObject.FindGameObjectWithTag("Player");
+    }
+
     void Start()
     {
         CreateLists();
@@ -87,7 +85,8 @@ public class EventHandler : MonoBehaviour
     void UpdateInfoEvent()
     {
         // Calling this event every X seconds (in our case 3 seconds) to save the current position and create a path
-       Instance.SendEventData(AddPlayerPositionEvent());
+        object o = AddPlayerPositionEvent();
+       Instance.SendEventData(o);
     }
 
     void CreateLists()

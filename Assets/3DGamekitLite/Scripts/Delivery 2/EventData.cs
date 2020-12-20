@@ -29,8 +29,8 @@ public enum SURFACE_TYPE
 public class EventData
 {
     public static EventData eventdata;
-    protected uint event_id;
-    protected DateTime timestamp;
+    public uint event_id;
+    public DateTime timestamp;
     public EventFilter type;
 
     public EventData()
