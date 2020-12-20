@@ -52,6 +52,13 @@ public class EventData
 
 public class PlayerPositionEvent : EventData     // Player current position | Also used for Heatmap --------- Should we create a timer for saving this position every 3 seconds ?
 {
+    public PlayerPositionEvent()
+    {
+        x = 0;
+        y = 0;
+        z = 0;
+    }
+
     public PlayerPositionEvent(uint ev, DateTime time, Vector3 pos) : base(ev, time)
     {
         x = pos.x;

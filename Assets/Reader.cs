@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public class Reader : MonoBehaviour
@@ -30,6 +31,13 @@ public class Reader : MonoBehaviour
     static SwitchesTimeEvent SwitchesTimeDataReturn;
     static FindKeyEvent FindKeyDataReturn;
 
+    private void Awake()
+    {
+        PositionDataReturn = new PlayerPositionEvent();
+
+        
+        arrPosition = new List<PlayerPositionEvent>();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -41,14 +49,14 @@ public class Reader : MonoBehaviour
     public void ReadEvents()
     {
         ReadPosition();
-        ReadDeath();
-        ReadFalls();
-        ReadKills();
-        ReadLifeLost();
-        ReadSwitches();
-        Readkey();
-        ReadFinish();
-        Readpath();
+        //ReadDeath();
+        //ReadFalls();
+        //ReadKills();
+        //ReadLifeLost();
+        //ReadSwitches();
+        //Readkey();
+        //ReadFinish();
+        //Readpath();
     }
     void ReadPosition()
     {
@@ -61,9 +69,9 @@ public class Reader : MonoBehaviour
         for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
         {
             lineData = (lines[i].Trim()).Split(","[0]);
-            PositionDataReturn.x = int.Parse(lineData[1]);
-            PositionDataReturn.y = int.Parse(lineData[2]);
-            PositionDataReturn.z = int.Parse(lineData[3]);
+            PositionDataReturn.x = float.Parse(lineData[0], CultureInfo.InvariantCulture);
+            PositionDataReturn.y = float.Parse(lineData[1], CultureInfo.InvariantCulture);
+            PositionDataReturn.z = float.Parse(lineData[2], CultureInfo.InvariantCulture);
 
             arrPosition.Add(PositionDataReturn);      
         }
@@ -80,10 +88,10 @@ public class Reader : MonoBehaviour
         for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
         {
             lineData = (lines[i].Trim()).Split(","[0]);
-            DeathDataReturn.x = float.Parse(lineData[1]);
-            DeathDataReturn.y = float.Parse(lineData[2]);
-            DeathDataReturn.z = float.Parse(lineData[3]);
-            DeathDataReturn.enemy = int.Parse(lineData[4]);
+            DeathDataReturn.x = float.Parse(lineData[0], CultureInfo.InvariantCulture);
+            DeathDataReturn.y = float.Parse(lineData[1], CultureInfo.InvariantCulture);
+            DeathDataReturn.z = float.Parse(lineData[2], CultureInfo.InvariantCulture);
+            DeathDataReturn.enemy = int.Parse(lineData[3]);
 
             arrDeath.Add(DeathDataReturn);
         }
@@ -100,9 +108,9 @@ public class Reader : MonoBehaviour
         for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
         {
             lineData = (lines[i].Trim()).Split(","[0]);
-            FallsDataReturn.x = float.Parse(lineData[1]);
-            FallsDataReturn.y = float.Parse(lineData[2]);
-            FallsDataReturn.z = float.Parse(lineData[3]);
+            FallsDataReturn.x = float.Parse(lineData[0], CultureInfo.InvariantCulture);
+            FallsDataReturn.y = float.Parse(lineData[1], CultureInfo.InvariantCulture);
+            FallsDataReturn.z = float.Parse(lineData[2], CultureInfo.InvariantCulture);
             FallsDataReturn.surface = int.Parse(lineData[4]);
 
             arrFalls.Add(FallsDataReturn);
@@ -120,9 +128,9 @@ public class Reader : MonoBehaviour
         for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
         {
             lineData = (lines[i].Trim()).Split(","[0]);
-            EnemyKillsDataReturn.x = float.Parse(lineData[1]);
-            EnemyKillsDataReturn.y = float.Parse(lineData[2]);
-            EnemyKillsDataReturn.z = float.Parse(lineData[3]);
+            EnemyKillsDataReturn.x = float.Parse(lineData[0], CultureInfo.InvariantCulture);
+            EnemyKillsDataReturn.y = float.Parse(lineData[1], CultureInfo.InvariantCulture);
+            EnemyKillsDataReturn.z = float.Parse(lineData[2], CultureInfo.InvariantCulture);
             EnemyKillsDataReturn.enemy = int.Parse(lineData[4]);
 
             arrEnemyKills.Add(EnemyKillsDataReturn);
@@ -140,9 +148,9 @@ public class Reader : MonoBehaviour
         for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
         {
             lineData = (lines[i].Trim()).Split(","[0]);
-            LifeLostDataReturn.x = float.Parse(lineData[1]);
-            LifeLostDataReturn.y = float.Parse(lineData[2]);
-            LifeLostDataReturn.z = float.Parse(lineData[3]);
+            LifeLostDataReturn.x = float.Parse(lineData[0], CultureInfo.InvariantCulture);
+            LifeLostDataReturn.y = float.Parse(lineData[1], CultureInfo.InvariantCulture);
+            LifeLostDataReturn.z = float.Parse(lineData[2], CultureInfo.InvariantCulture);
             LifeLostDataReturn.enemy = int.Parse(lineData[4]);
 
             arrLifeLost.Add(LifeLostDataReturn);
@@ -212,12 +220,12 @@ public class Reader : MonoBehaviour
         for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
         {
             lineData = (lines[i].Trim()).Split(","[0]);
-            PathDataReturn.x = float.Parse(lineData[1]);
-            PathDataReturn.y = float.Parse(lineData[2]);
-            PathDataReturn.z = float.Parse(lineData[3]);
-            PathDataReturn.ex = float.Parse(lineData[4]);
-            PathDataReturn.ey = float.Parse(lineData[5]);
-            PathDataReturn.ez = float.Parse(lineData[6]);
+            PathDataReturn.x = float.Parse(lineData[0], CultureInfo.InvariantCulture);
+            PathDataReturn.y = float.Parse(lineData[1], CultureInfo.InvariantCulture);
+            PathDataReturn.z = float.Parse(lineData[2], CultureInfo.InvariantCulture);
+            PathDataReturn.ex = float.Parse(lineData[3], CultureInfo.InvariantCulture);
+            PathDataReturn.ey = float.Parse(lineData[4], CultureInfo.InvariantCulture);
+            PathDataReturn.ez = float.Parse(lineData[5], CultureInfo.InvariantCulture);
 
             arrPath.Add(PathDataReturn);
         }
