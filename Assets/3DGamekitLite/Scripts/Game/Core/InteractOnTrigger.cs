@@ -56,13 +56,13 @@ namespace Gamekit3D
                 if (gameObject.name == "Switch (1)")
                 {
                     timerSwitch3 = Time.time - EventHandler.eventhandler.GetStartTime();
-                    SwitchTimerEvent?.Invoke(2, timerSwitch2);
+                    SwitchTimerEvent?.Invoke(3, timerSwitch2);
                 }
 
-                if (gameObject.name == "InfoZone_InsideBox")
+                if (gameObject.name == "InfoZone_InsideBox")//Key
                 {
-                    timerSwitch1 = Time.time - EventHandler.eventhandler.GetStartTime();
-                    SwitchTimerEvent?.Invoke(1, timerSwitch1);
+                    timerKey = Time.time - EventHandler.eventhandler.GetStartTime();
+                    KeyTimerEvent?.Invoke(timerKey);
                 }
 
                 // Porta 1 = "PressurePad"
@@ -70,10 +70,10 @@ namespace Gamekit3D
                 // Switch 2 = "Switch"
                 // Switch 3 = "Switch (1)"
 
-                if (gameObject.name == "InfoZone_End")
+                if (gameObject.name == "InfoZone_End")//End Level
                 {
-                    timerKey = Time.time - EventHandler.eventhandler.GetStartTime();
-                    KeyTimerEvent?.Invoke(timerKey);
+                    finalTimer = Time.time - EventHandler.eventhandler.GetStartTime();
+                    LevelCompleteEvent?.Invoke(finalTimer);
                 }
             }
         }

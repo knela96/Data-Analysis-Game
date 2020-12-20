@@ -6,6 +6,7 @@ using UnityEngine;
 public class EventHandler : MonoBehaviour
 {
     public GameObject ellen;
+    public GameObject camera;
     public static EventData eventdata;
     public static EventHandler eventhandler;
 
@@ -14,30 +15,12 @@ public class EventHandler : MonoBehaviour
     public float timeStart = 0;
 
 
-    static EventHandler mInstance;
-    private GameObject player;
+    public uint PlayerID = 0;
 
-    public static EventHandler Instance
-    {
-        get
-        {
-            if (mInstance == null)
-            {
-                GameObject go = new GameObject("Event Handler");
-                mInstance = go.AddComponent<EventHandler>();
-            }
-            return mInstance;
-        }
-    }
-
-    private void Awake()
-    {
-        player = GameObject.FindGameObjectWithTag("Player");
-    }
 
     public void SendEventData(object eventData)
     {
-        player.SendMessage("ReceiveEvent", eventData);
+        ellen.SendMessage("ReceiveEvent", eventData);
     }
 
     // Per no posar-ho tot a una mateix llista que englobi tots els events de tots els tipus
@@ -67,6 +50,13 @@ public class EventHandler : MonoBehaviour
         InteractOnTrigger.KeyTimerEvent -= AddKeyTimerEvent;
     }
 
+    public void Awake()
+    {
+        ellen = GameObject.FindGameObjectWithTag("Player");
+        camera = GameObject.FindGameObjectWithTag("MainCamera");
+        PlayerID = (uint)Random.Range(0, 99999);
+    }
+
     void Start()
     {
         CreateLists();
@@ -76,7 +66,8 @@ public class EventHandler : MonoBehaviour
             eventhandler = this;
         }
 
-        InvokeRepeating("UpdateInfoEvent", 3.0f, 3.0f); 
+        InvokeRepeating("UpdateInfoEvent", 1.0f, 1.0f);
+        InvokeRepeating("UpdatePathPosition", 0.0f, 0.3f);
     }
     void Update()
     {
@@ -87,67 +78,63 @@ public class EventHandler : MonoBehaviour
     void UpdateInfoEvent()
     {
         // Calling this event every X seconds (in our case 3 seconds) to save the current position and create a path
-       Instance.SendEventData(AddPlayerPositionEvent());
+       AddPlayerPositionEvent();
+    }
+    void UpdatePathPosition()
+    {
+        AddPlayerPathEvent();
     }
 
     void CreateLists()
     {
         events = new List<EventData>();
     }
-
-    public object AddPlayerPositionEvent()
+    public void AddPlayerPathEvent()
     {
-        object e = new PlayerPositionEvent((uint)events.Count, System.DateTime.Now, ellen.transform.position);
-        return e;
-        //position_events.Add(e);
-
+        SendEventData(new PlayerPathEvent(PlayerID, System.DateTime.Now, ellen.transform.position, new Vector3(camera.transform.eulerAngles.x, ellen.transform.eulerAngles.y, camera.transform.eulerAngles.z)));
     }
-    public void AddPlayerDeathEvent()
+    public void AddPlayerPositionEvent()
     {
-        PlayerDeathEvent e = new PlayerDeathEvent((uint)events.Count, System.DateTime.Now, ellen.transform.position);
-        events.Add(e);
+        SendEventData(new PlayerPositionEvent(PlayerID, System.DateTime.Now, ellen.transform.position));
     }
-    public void AddEnemyKilledEvent(GameObject enemy)
+
+    public void AddPlayerDeathEvent(ENEMY_TYPE type)
     {
-        EnemyKillsEvent e = new EnemyKillsEvent((uint)events.Count, System.DateTime.Now, enemy.transform.position, ENEMY_TYPE.ALL);
-        events.Add(e);
+        SendEventData(new PlayerDeathEvent(PlayerID, System.DateTime.Now, ellen.transform.position,type));
+    }
+    public void AddEnemyKilledEvent(GameObject enemy, ENEMY_TYPE type)
+    {
+        SendEventData(new EnemyKillsEvent(PlayerID, System.DateTime.Now, enemy.transform.position, type));
     }
 
     public void AddKeyTimerEvent(float time)
     {
-        // Don't know how to save the timer
-        FindKeyEvent e = new FindKeyEvent((uint)events.Count, System.DateTime.Now, time);
-        events.Add(e);
+        SendEventData(new FindKeyEvent(PlayerID, System.DateTime.Now, time));
     }
 
     public void AddPlayerLifeLostEvent(ENEMY_TYPE type)
     {
-        PlayerLifeLostEvent e = new PlayerLifeLostEvent((uint)events.Count, System.DateTime.Now, ellen.transform.position, type);
-        events.Add(e);
+        SendEventData(new PlayerLifeLostEvent(PlayerID, System.DateTime.Now, ellen.transform.position, type));
     }
 
     public void AddPlayerFallEvent(SURFACE_TYPE type)
     {
-        PlayerFallsEvent e = new PlayerFallsEvent((uint)events.Count, System.DateTime.Now, ellen.transform.position, type);
-        events.Add(e);
+        SendEventData(new PlayerFallsEvent(PlayerID, System.DateTime.Now, ellen.transform.position, type));
     }
 
     public void AddSwitchTimeEvent(int switch_id, float time)
     {
-        SwitchesTimeEvent e = new SwitchesTimeEvent((uint)events.Count, System.DateTime.Now, switch_id, time);
-        events.Add(e);
+        SendEventData(new SwitchesTimeEvent(PlayerID, System.DateTime.Now, switch_id, time));
     }
 
     public void AddLevelCompleteEvent(float time)
     {
-        TimeToFinishEvent e = new TimeToFinishEvent((uint)events.Count, System.DateTime.Now, time);
-        events.Add(e);
+        SendEventData(new TimeToFinishEvent(PlayerID, System.DateTime.Now, time));
     }
 
     public void AddFindKeyEvent(float time)
     {
-        FindKeyEvent e = new FindKeyEvent((uint)events.Count, System.DateTime.Now, time);
-        events.Add(e);
+        SendEventData(new FindKeyEvent(PlayerID, System.DateTime.Now, time));
     }
 
     public void StartTimer()
@@ -159,41 +146,4 @@ public class EventHandler : MonoBehaviour
     {
         return timeStart;
     }
-
-    //public void AddEvent(EventFilter filter)
-    //{
-    //    if (filter == EventFilter.Position)
-    //    {
-    //        PlayerPositionEvent player_pos_ev = new PlayerPositionEvent((uint)events.Count, System.DateTime.Now, ellen.transform.position);
-    //        events.Add(player_pos_ev);
-    //        position_events.Add(player_pos_ev);
-    //    }
-    //    else if (filter == EventFilter.PlayerDeath)
-    //    {
-    //        //PlayerDeathEvent player_death_ev = new PlayerDeathEvent((uint)events.Count, System.DateTime.Now, ?? );
-    //    }
-    //    else if (filter == EventFilter.Objects)
-    //    {
-
-    //    }
-    //    else if (filter == EventFilter.None)
-    //    {
-    //        // Used for timer events
-
-    //    }
-    //    else if (filter == EventFilter.LifeLost)
-    //    {
-
-    //    }
-    //    else if (filter == EventFilter.Fall)
-    //    {
-
-    //    }
-    //    else if (filter == EventFilter.EnemyDeath)
-    //    {
-
-    //    }
-    //}
-
-
 }

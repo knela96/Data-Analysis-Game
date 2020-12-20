@@ -37,7 +37,7 @@ public class Heatmap : MonoBehaviour
 
     public void CountEvents()
     {
-        
+        /*
         gridArray = new int[GridSizeX, GridSizeY];//Remove for later
 
         for (int i = 0; i < EventsList.Count; i++)
@@ -89,6 +89,7 @@ public class Heatmap : MonoBehaviour
                 }
             }
         }
+        */
         /* Change dynamically but affects all data
         for (int x = 0; x < GridSizeX; x++)
         {

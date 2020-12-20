@@ -45,47 +45,47 @@ public class Writer : MonoBehaviour
         // Position Event
         if (!File.Exists(getPath(Table.PlayerPositionEvent)))
         {
-            string[] RowHeadersPosition = { "PlayerID", "PosX", "PosY", "PosZ" };
+            string[] RowHeadersPosition = { "PosX", "PosY", "PosZ", "PlayerID", "DateTime"};
             Save(RowHeadersPosition, Table.PlayerPositionEvent);
         }
         if (!File.Exists(getPath(Table.PlayerDeathEvent)))
         {
-            string[] RowHeadersPosition = { "PlayerID", "PosX", "PosY", "PosZ", "Enemy" };
+            string[] RowHeadersPosition = { "PosX", "PosY", "PosZ", "Enemy", "PlayerID", "DateTime" };
             Save(RowHeadersPosition, Table.PlayerDeathEvent);
         }
         if (!File.Exists(getPath(Table.PlayerFallsEvent)))
         {
-            string[] RowHeadersPosition = { "PlayerID", "PosX", "PosY", "PosZ", "Fall Type" };
+            string[] RowHeadersPosition = { "PosX", "PosY", "PosZ", "Fall Type", "PlayerID", "DateTime" };
             Save(RowHeadersPosition, Table.PlayerFallsEvent);
         }
         if (!File.Exists(getPath(Table.PlayerLifeLostEvent)))
         {
-            string[] RowHeadersPosition = { "PlayerID", "PosX", "PosY", "PosZ", "Enemy", "Life Lost" };
+            string[] RowHeadersPosition = { "PosX", "PosY", "PosZ", "Enemy", "PlayerID", "DateTime" };
             Save(RowHeadersPosition, Table.PlayerLifeLostEvent);
         }
         if (!File.Exists(getPath(Table.PlayerPathEvent)))
         {
-            string[] RowHeadersPosition = { "PlayerID", "PosX", "PosY", "PosZ", "Orientation X", "Orientation Y", "Orientation Z" };
+            string[] RowHeadersPosition = { "PosX", "PosY", "PosZ", "Orientation X", "Orientation Y", "Orientation Z", "PlayerID", "DateTime" };
             Save(RowHeadersPosition, Table.PlayerPathEvent);
         }
         if (!File.Exists(getPath(Table.TimetoFinish)))
         {
-            string[] RowHeadersPosition = { "PlayerID", "Time" };
+            string[] RowHeadersPosition = { "Time", "PlayerID", "DateTime" };
             Save(RowHeadersPosition, Table.TimetoFinish);
         }
         if (!File.Exists(getPath(Table.EnemyKills)))
         {
-            string[] RowHeadersPosition = { "PlayerID", "EnemyPos X", "EnemyPos Y", "EnemyPos Z", "Enemy Type", "Player Pos X", "Player Pos Y", "Player Pos Z" };
+            string[] RowHeadersPosition = { "EnemyPos X", "EnemyPos Y", "EnemyPos Z", "Enemy Type", "PlayerID", "DateTime" };
             Save(RowHeadersPosition, Table.EnemyKills);
         }
         if (!File.Exists(getPath(Table.SwitchesTimeEvent)))
         {
-            string[] RowHeadersPosition = { "PlayerID", "Switch Number", "Time" };
+            string[] RowHeadersPosition = { "Switch Number", "Time", "PlayerID", "DateTime" };
             Save(RowHeadersPosition, Table.SwitchesTimeEvent);
         }
         if (!File.Exists(getPath(Table.FindKeyEvent)))
         {
-            string[] RowHeadersPosition = { "PlayerID", "Time" };
+            string[] RowHeadersPosition = { "Time", "PlayerID", "DateTime" };
             Save(RowHeadersPosition, Table.FindKeyEvent);
         }
     }

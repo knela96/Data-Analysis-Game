@@ -39,10 +39,10 @@ namespace Gamekit3D
 
         EventHandler eventHandler;
 
-        public delegate void PlayerDeath();
+        public delegate void PlayerDeath(ENEMY_TYPE type);
         public static PlayerDeath PlayerDeathEvent;
 
-        public delegate void EnemyDeath(GameObject enemy);
+        public delegate void EnemyDeath(GameObject enemy, ENEMY_TYPE type);
         public static EnemyDeath EnemyDeathEvent;
 
         public delegate void PlayerHurt(ENEMY_TYPE type);
@@ -111,11 +111,24 @@ namespace Gamekit3D
             if (currentHitPoints <= 0)
             {
                 schedule += OnDeath.Invoke; //This avoid race condition when objects kill each other.
-                if (this.gameObject.layer == 9) // Player
-                    PlayerDeathEvent?.Invoke();
+                if (this.gameObject.layer == 9)//Player
+                {
+                    if (data.damager.gameObject.name == "BodyDamager")
+                        PlayerDeathEvent?.Invoke(ENEMY_TYPE.CHOMPER);
+
+                    else if (data.damager.gameObject.name == "Spit(Clone)")
+                        PlayerDeathEvent?.Invoke(ENEMY_TYPE.SPITTER);
+
+                }
 
                 else if (this.gameObject.layer == 23) // Enemy
-                    EnemyDeathEvent?.Invoke(this.gameObject);
+                {
+                    if (gameObject.name == "Chomper")
+                        EnemyDeathEvent?.Invoke(gameObject, ENEMY_TYPE.CHOMPER);
+
+                    else if (gameObject.name == "Spitter")
+                        EnemyDeathEvent?.Invoke(gameObject, ENEMY_TYPE.SPITTER);
+                }
             }
                 
             else
