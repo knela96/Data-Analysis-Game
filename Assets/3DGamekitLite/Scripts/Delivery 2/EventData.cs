@@ -75,10 +75,10 @@ public class PlayerFallsEvent : EventData    // Player fall position & type of s
         x = pos.x;
         y = pos.y;
         z = pos.z;
-        surface_type = (int)surface_name;
+        surface = (int)surface_name;
     }
     public float x,y,z;
-    public int surface_type;
+    public int surface;
 }
 public class EnemyKillsEvent : EventData    // Enemy position where killed by the player & enemy type name
 {
@@ -87,10 +87,10 @@ public class EnemyKillsEvent : EventData    // Enemy position where killed by th
         x = enemy_pos.x;
         y = enemy_pos.y;
         z = enemy_pos.z;
-        type = (int)enemy_name;
+        enemy = (int)enemy_name;
     }
     public float x, y, z;
-    public int type;
+    public int enemy;
 }
 public class PlayerLifeLostEvent : EventData    // Player lost life position & enemy that damaged you | Also used for Heatmap
 {
@@ -99,10 +99,10 @@ public class PlayerLifeLostEvent : EventData    // Player lost life position & e
         x = pos.x;
         y = pos.y;
         z = pos.z;
-        type = (int)enemy_name;
+        enemy = (int)enemy_name;
     }
     public float x, y, z;
-    public int type;
+    public int enemy;
 }
 public class SwitchesTimeEvent : EventData    // Time that player takes to press each switch
 {
