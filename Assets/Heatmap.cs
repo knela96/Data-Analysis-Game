@@ -117,22 +117,22 @@ public class Heatmap : MonoBehaviour
 
     void VisualizeArrows()
     {
-        int index = paths.Count - maxArrows;
-        index = Mathf.Max(index, 0);
-        for (int i = index; i < paths.Count; ++i)
-        {
-            Vector3 pos = paths[i].position;
-            if(i > 0)
-            {
-                Vector3 previous = paths[i - 1].position;
-                //Vector3 midpoint = new Vector3(previous.x + pos.x / 2, previous.y + pos.y / 2, previous.z + pos.z / 2);
-                //Gizmos.DrawLine(previous, pos);
-                pos.y = pos.y + 0.15f; 
-                GameObject go = Instantiate(arrow, pos, Quaternion.Euler(paths[i].orientation.x, paths[i].orientation.y, paths[i].orientation.z));
-                go.GetComponent<Renderer>().material.SetColor("_Color", ArrowColor);
-                instancedArrows.Add(go);
-            }
-        }
+        //int index = paths.Count - maxArrows;
+        //index = Mathf.Max(index, 0);
+        //for (int i = index; i < paths.Count; ++i)
+        //{
+        //    Vector3 pos = paths[i].position;
+        //    if(i > 0)
+        //    {
+        //        Vector3 previous = paths[i - 1].position;
+        //        //Vector3 midpoint = new Vector3(previous.x + pos.x / 2, previous.y + pos.y / 2, previous.z + pos.z / 2);
+        //        //Gizmos.DrawLine(previous, pos);
+        //        pos.y = pos.y + 0.15f; 
+        //        GameObject go = Instantiate(arrow, pos, Quaternion.Euler(paths[i].orientation.x, paths[i].orientation.y, paths[i].orientation.z));
+        //        go.GetComponent<Renderer>().material.SetColor("_Color", ArrowColor);
+        //        instancedArrows.Add(go);
+        //    }
+        //}
 
     }
 

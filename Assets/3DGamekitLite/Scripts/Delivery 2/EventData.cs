@@ -54,19 +54,23 @@ public class PlayerPositionEvent : EventData     // Player current position | Al
 {
     public PlayerPositionEvent(uint ev, DateTime time, Vector3 pos) : base(ev, time)
     {
-        position = pos;
+        x = pos.x;
+        y = pos.y;
+        z = pos.z;
     }
-    public Vector3 position;
+    public float x, y, z;
 }
 public class PlayerDeathEvent : EventData    // Player death position | Also used for Heatmap
 {
     public PlayerDeathEvent(uint ev, DateTime time, Vector3 pos, ENEMY_TYPE enemy) : base(ev, time)
     {
-        position = pos;
-        type = (int)enemy;
+        x = pos.x;
+        y = pos.y;
+        z = pos.z;
+        this.enemy = (int)enemy;
     }
-    public Vector3 position;
-    public int type;
+    public float x, y, z;
+    public int enemy;
 }
 public class PlayerFallsEvent : EventData    // Player fall position & type of surface where player has fallen | Also used for Heatmap
 {
