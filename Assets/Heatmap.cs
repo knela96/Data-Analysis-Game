@@ -6,17 +6,22 @@ using System;
 
 public class Heatmap : MonoBehaviour
 {
-    public int GridSizeX = 200, GridSizeY = 200;
-    public float map_originX = -34, map_originY = -40;
+    int GridSizeX = 200, GridSizeY = 200;
+    float map_originX = -34, map_originY = -40;
     public float cubeSize = 1;
     int[,] gridArray;
     public GameObject heatMapCube;
     public float transparency = 0.5f;
+    Vector3 d_previous;
 
     //--------------------------
-
+    [HideInInspector]
     public List<GameObject> instancedCubes;
+    [HideInInspector]
+    public List<GameObject> instancedArrows;
     public List<EventData> EventsList = new List<EventData>();
+
+    public List<PlayerPathEvent> paths = new List<PlayerPathEvent>();
 
     public EventFilter current_filter;
     public ENEMY_TYPE enemy_filter;
@@ -24,7 +29,11 @@ public class Heatmap : MonoBehaviour
 
     public Gradient ColorGradient;
 
-    public int maxCounts = 50;
+    public int heatMaxValue = 50;
+
+    public GameObject arrow;
+    public Color ArrowColor;
+    public int maxArrows = 200;
 
     public void CountEvents()
     {
@@ -48,8 +57,11 @@ public class Heatmap : MonoBehaviour
                         y = ((PlayerDeathEvent)eventData).position.z;
                         break;
                     case (EventFilter.Fall):
-                        x = ((PlayerFallsEvent)eventData).position.x;
-                        y = ((PlayerFallsEvent)eventData).position.z;
+                        if (((PlayerFallsEvent)eventData).surface_type == surface_filter || ((PlayerFallsEvent)eventData).surface_type == SURFACE_TYPE.ALL)
+                        {
+                            x = ((PlayerFallsEvent)eventData).position.x;
+                            y = ((PlayerFallsEvent)eventData).position.z;
+                        }
                         break;
                     case (EventFilter.Objects):
                         x = ((ObjectsDestroyedEvent)eventData).position.x;
@@ -106,27 +118,48 @@ public class Heatmap : MonoBehaviour
         }
     }
 
+    void VisualizeArrows()
+    {
+        int index = paths.Count - maxArrows;
+        index = Mathf.Max(index, 0);
+        for (int i = index; i < paths.Count; ++i)
+        {
+            Vector3 pos = paths[i].position;
+            if(i > 0)
+            {
+                Vector3 previous = paths[i - 1].position;
+                //Vector3 midpoint = new Vector3(previous.x + pos.x / 2, previous.y + pos.y / 2, previous.z + pos.z / 2);
+                //Gizmos.DrawLine(previous, pos);
+                pos.y = pos.y + 0.15f; 
+                GameObject go = Instantiate(arrow, pos, Quaternion.Euler(paths[i].orientation.x, paths[i].orientation.y, paths[i].orientation.z));
+                go.GetComponent<Renderer>().material.SetColor("_Color", ArrowColor);
+                instancedArrows.Add(go);
+            }
+        }
+
+    }
+
     void SpawnCube(int x, int y, int count)
     {
-        x = (int)(x * cubeSize + map_originX);
-        y = (int)(y * cubeSize + map_originY);
-        Vector3 pos = new Vector3(x, GetHeight(x, y), y);
+        float nwx = x * cubeSize + map_originX + cubeSize /2;
+        float nwy = y * cubeSize + map_originY + cubeSize /2;
+        Vector3 pos = new Vector3(nwx, GetHeight(nwx, nwy), nwy);
         GameObject cube = Instantiate(heatMapCube, pos, Quaternion.identity);
         instancedCubes.Add(cube);
-        float f = Mathf.Clamp01((float)count / maxCounts);
+        float f = Mathf.Clamp01((float)count / heatMaxValue);
         Color c = ColorGradient.Evaluate(f);
         c.a = transparency;
         cube.GetComponent<Renderer>().material.SetColor("_Color", c);
     }
 
-    private int GetHeight(int x, int y)
+    private float GetHeight(float x, float y)
     {
-        Vector3 pos = new Vector3(x, 10, y);
+        Vector3 pos = new Vector3(x, 100, y);
         RaycastHit hit;
         int layerMask = 1 << 16;
         if (Physics.Raycast(pos,Vector3.down, out hit, Mathf.Infinity, layerMask))
         {
-            return (int)(hit.point.y + cubeSize);
+            return hit.point.y + cubeSize / 2;
         }
         return 0;
     }
@@ -139,25 +172,49 @@ public class Heatmap : MonoBehaviour
         gridArray = new int[GridSizeX, GridSizeY];
 
         heatMapCube.transform.localScale = new Vector3(cubeSize, cubeSize, cubeSize);
+
+        //----------------------------
+        
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(1))
+        DateTime time = new DateTime();
+        Transform player_transform = GameObject.Find("Ellen").transform;
+
+        //LOAD NEW DATA
+        if (Input.GetMouseButtonDown(1))//Recalculate cubes
         {
-            CountEvents();
-            DateTime time = new DateTime();
-            PlayerPositionEvent pos1 = new PlayerPositionEvent(0,time, GameObject.Find("Ellen").transform.position);
+            PlayerPositionEvent pos1 = new PlayerPositionEvent(0,time, player_transform.position);
             EventsList.Add(pos1);
 
-            foreach (var obj in instancedCubes)
-            {
-                DestroyImmediate(obj);
-            }
-            instancedCubes.Clear();
-
-            VisualizeGrid();
+            CountEvents();
         }
+
+        foreach (var obj in instancedCubes)
+        {
+            Destroy(obj);
+        }
+        instancedCubes.Clear();
+
+        VisualizeGrid();
+
+        if (Vector3.Distance(player_transform.position,d_previous) >= 1)//Recalculate cubes
+        {
+            d_previous = player_transform.position;
+            PlayerPathEvent pl = new PlayerPathEvent(0, time, player_transform.position, new Vector3(player_transform.eulerAngles.x, player_transform.eulerAngles.y + 90, player_transform.eulerAngles.z));
+            paths.Add(pl);
+
+        }
+
+        foreach (var obj in instancedArrows)
+        {
+            Destroy(obj);
+        }
+        instancedArrows.Clear();
+
+        VisualizeArrows();
+
     }
 
 }
