@@ -1,143 +1,225 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System;
-using System.Reflection;
-
-
+using UnityEngine;
 
 public class Reader : MonoBehaviour
 {
-    
-    //string[] paths = new string[11];
+    public List<PlayerPositionEvent> arrPosition;
+    public List<PlayerDeathEvent> arrDeath;
+    public List<PlayerFallsEvent> arrFalls;
+    public List<PlayerLifeLostEvent> arrLifeLost;
+    public List<PlayerPathEvent> arrPath;
+    public List<TimeToFinishEvent> arrFinish;
+    public List<EnemyKillsEvent> arrEnemyKills;
+    public List<SwitchesTimeEvent> arrSwitchesTime;
+    public List<FindKeyEvent> arrFindKey;
 
 
-    //void Start()
-    //{
-    //    paths[(int)Table.PlayerPositionEvent - 1] = Application.dataPath + "/CSV/" + "PlayerPositionEvent.csv";
-    //    paths[(int)Table.PlayerDeathEvent - 1] = Application.dataPath + "/CSV/" + "PlayerDeathEvent.csv";
-    //    paths[(int)Table.PlayerFallsEvent - 1] = Application.dataPath + "/CSV/" + "PlayerFallsEvent.csv";
-    //    paths[(int)Table.PlayerLifeLostEvent - 1] = Application.dataPath + "/CSV/" + "PlayerLifeLostEvent.csv";
-    //    paths[(int)Table.ObjectsDestroyed - 1] = Application.dataPath + "/CSV/" + "ObjectsDestroyed.csv";
-    //    paths[(int)Table.PlayerPathEvent - 1] = Application.dataPath + "/CSV/" + "PlayerPathEvent.csv";
-    //    paths[(int)Table.TimetoFinish - 1] = Application.dataPath + "/CSV/" + "TimetoFinish.csv";
-    //    paths[(int)Table.EnemyKills - 1] = Application.dataPath + "/CSV/" + "EnemyKills.csv";
-    //    paths[(int)Table.SwitchesTimeEvent - 1] = Application.dataPath + "/CSV/" + "SwitchesTimeEvent.csv";
-    //    paths[(int)Table.TimePuzzleEvent - 1] = Application.dataPath + "/CSV/" + "TimePuzzleEvent.csv";
-    //    paths[(int)Table.FindKeyEvent - 1] = Application.dataPath + "/CSV/" + "FindKeyEvent.csv";
+    public bool isFilled = false;
 
-    //    // Clear all the files
-    //    //foreach (string path in paths)
-    //    //    File.Delete(path);
+    //We are using a static object to control the memory we use
+    static string[] lineData;
 
-    //    // Position Event
-    //    if (!File.Exists(getPath(Table.PlayerPositionEvent)))
-    //    {
-    //        string[] RowHeadersPosition = { "PlayerID", "PosX", "PosY", "PosZ"};
-    //        Save(RowHeadersPosition, Table.PlayerPositionEvent);
-    //    }
-    //    if (!File.Exists(getPath(Table.PlayerDeathEvent)))
-    //    {
-    //        string[] RowHeadersPosition = { "PlayerID", "PosX", "PosY", "PosZ", "Enemy" };
-    //        Save(RowHeadersPosition, Table.PlayerDeathEvent);
-    //    }
-    //    if (!File.Exists(getPath(Table.PlayerFallsEvent)))
-    //    {
-    //        string[] RowHeadersPosition = { "PlayerID", "PosX", "PosY", "PosZ", "Fall Type" };
-    //        Save(RowHeadersPosition, Table.PlayerFallsEvent);
-    //    }
-    //    if (!File.Exists(getPath(Table.PlayerLifeLostEvent)))
-    //    {
-    //        string[] RowHeadersPosition = { "PlayerID", "PosX", "PosY", "PosZ", "Enemy", "Life Lost" };
-    //        Save(RowHeadersPosition, Table.PlayerLifeLostEvent);
-    //    }
-    //    if (!File.Exists(getPath(Table.ObjectsDestroyed)))
-    //    {
-    //        string[] RowHeadersPosition = { "PlayerID", "PosX", "PosY", "PosZ", "Time passed" };
-    //        Save(RowHeadersPosition, Table.ObjectsDestroyed);
-    //    }
-    //    if (!File.Exists(getPath(Table.PlayerPathEvent)))
-    //    {
-    //        string[] RowHeadersPosition = { "PlayerID", "PosX", "PosY", "PosZ", "Orientation X", "Orientation Y", "Orientation Z" };
-    //        Save(RowHeadersPosition, Table.PlayerPathEvent);
-    //    }
-    //    if (!File.Exists(getPath(Table.TimetoFinish)))
-    //    {
-    //        string[] RowHeadersPosition = { "PlayerID", "Time" };
-    //        Save(RowHeadersPosition, Table.TimetoFinish);
-    //    }
-    //    if (!File.Exists(getPath(Table.EnemyKills)))
-    //    {
-    //        string[] RowHeadersPosition = { "PlayerID", "EnemyPos X", "EnemyPos Y", "EnemyPos Z", "Enemy Type", "Player Pos X", "Player Pos Y", "Player Pos Z"};
-    //        Save(RowHeadersPosition, Table.EnemyKills);
-    //    }
-    //    if (!File.Exists(getPath(Table.SwitchesTimeEvent)))
-    //    {
-    //        string[] RowHeadersPosition = { "PlayerID", "Switch Number", "Time"};
-    //        Save(RowHeadersPosition, Table.SwitchesTimeEvent);
-    //    }
-    //    if (!File.Exists(getPath(Table.TimePuzzleEvent)))
-    //    {
-    //        string[] RowHeadersPosition = { "PlayerID", "Puzzle ID", "Time" };
-    //        Save(RowHeadersPosition, Table.TimePuzzleEvent);
-    //    }
-    //    if (!File.Exists(getPath(Table.FindKeyEvent)))
-    //    {
-    //        string[] RowHeadersPosition = { "PlayerID",  "Time" };
-    //        Save(RowHeadersPosition, Table.FindKeyEvent);
-    //    }
-    //}
+    static PlayerPositionEvent PositionDataReturn;
+    static PlayerDeathEvent DeathDataReturn;
+    static PlayerFallsEvent FallsDataReturn;
+    static PlayerLifeLostEvent LifeLostDataReturn;
+    static PlayerPathEvent PathDataReturn;
+    static TimeToFinishEvent FinishDataReturn;
+    static EnemyKillsEvent EnemyKillsDataReturn;
+    static SwitchesTimeEvent SwitchesTimeDataReturn;
+    static FindKeyEvent FindKeyDataReturn;
 
 
-    //void Save(string[] rowData, Table table)
-    //{
+    // Start is called before the first frame update
+    void Start()
+    {
+        ReadEvents();
+        isFilled = true;
+    }
 
-    //    string delimiter = ",";
-    //    string filePath = getPath(table);
+    public void ReadEvents()
+    {
+        ReadPosition();
+        ReadDeath();
+        ReadFalls();
+        ReadKills();
+        ReadLifeLost();
+        ReadSwitches();
+        Readkey();
+        ReadFinish();
+        Readpath();
+    }
+    void ReadPosition()
+    {
+        string positionPath = Application.dataPath + "/CSV/" + "PlayerPositionEvent.csv";
 
-    //    File.AppendAllText(filePath, string.Join(delimiter, rowData) + ",\n");
-    //}
-
-    //private string getPath(Table table)
-    //{
-    //    return paths[(int)table - 1];
-    //}
+        string fileData = System.IO.File.ReadAllText(positionPath.ToString());
+        string[] lines = fileData.Split("\n"[0]);
 
 
-    //void ReceiveEvent(object eventData)
-    //{
-    //    // Decide to which table write
+        for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
+        {
+            lineData = (lines[i].Trim()).Split(","[0]);
+            PositionDataReturn.x = int.Parse(lineData[1]);
+            PositionDataReturn.y = int.Parse(lineData[2]);
+            PositionDataReturn.z = int.Parse(lineData[3]);
+
+            arrPosition.Add(PositionDataReturn);      
+        }
+    }
+
+    void ReadDeath()
+    {
+        string positionPath = Application.dataPath + "/CSV/" + "PlayerDeathEvent.csv";
+
+        string fileData = System.IO.File.ReadAllText(positionPath.ToString());
+        string[] lines = fileData.Split("\n"[0]);
 
 
+        for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
+        {
+            lineData = (lines[i].Trim()).Split(","[0]);
+            DeathDataReturn.x = float.Parse(lineData[1]);
+            DeathDataReturn.y = float.Parse(lineData[2]);
+            DeathDataReturn.z = float.Parse(lineData[3]);
+            DeathDataReturn.enemy = int.Parse(lineData[4]);
 
-    //    // Properties serialization
-    //    FieldInfo[] properties = eventData.GetType().GetFields();
+            arrDeath.Add(DeathDataReturn);
+        }
+    }
 
-    //    string[] rowDataTemp = new string[properties.Length];
+    void ReadFalls()
+    {
+        string positionPath = Application.dataPath + "/CSV/" + "PlayerFallsEvent.csv";
 
-    //    int i = 0;
-    //    foreach (FieldInfo property in properties)
-    //        rowDataTemp[i++] = property.GetValue(eventData).ToString().Replace(',', '.');
+        string fileData = System.IO.File.ReadAllText(positionPath.ToString());
+        string[] lines = fileData.Split("\n"[0]);
 
-    //    Save(rowDataTemp, GetTable(eventData));
-    //}
 
-    //Table GetTable(object eventData)
-    //{
-    //    ////Table currentWriteTable = Table.NullEvent;
-    //    //if (eventData is PositionEventData)
-    //    //    return Table.PositionEvent;
-    //    //else if (eventData is SessionEventData)
-    //    //    return Table.SessionEvent;
-    //    //else if (eventData is HitEvent)
-    //    //    return Table.HitEvent;
-    //    //else if (eventData is RoundEndEvent)
-    //    //    return Table.RoundEndEvent;
-    //    //else if (eventData is ErrorEvent)
-    //    //    return Table.ErrorEvent;
-        
-    //    return Table.NullEvent;
-    //}
+        for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
+        {
+            lineData = (lines[i].Trim()).Split(","[0]);
+            FallsDataReturn.x = float.Parse(lineData[1]);
+            FallsDataReturn.y = float.Parse(lineData[2]);
+            FallsDataReturn.z = float.Parse(lineData[3]);
+            FallsDataReturn.surface = int.Parse(lineData[4]);
+
+            arrFalls.Add(FallsDataReturn);
+        }
+    }
+
+    void ReadKills()
+    {
+        string positionPath = Application.dataPath + "/CSV/" + "EnemyKills.csv";
+
+        string fileData = System.IO.File.ReadAllText(positionPath.ToString());
+        string[] lines = fileData.Split("\n"[0]);
+
+
+        for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
+        {
+            lineData = (lines[i].Trim()).Split(","[0]);
+            EnemyKillsDataReturn.x = float.Parse(lineData[1]);
+            EnemyKillsDataReturn.y = float.Parse(lineData[2]);
+            EnemyKillsDataReturn.z = float.Parse(lineData[3]);
+            EnemyKillsDataReturn.enemy = int.Parse(lineData[4]);
+
+            arrEnemyKills.Add(EnemyKillsDataReturn);
+        }
+    }
+
+    void ReadLifeLost()
+    {
+        string positionPath = Application.dataPath + "/CSV/" + "PlayerLifeLostEvent.csv";
+
+        string fileData = System.IO.File.ReadAllText(positionPath.ToString());
+        string[] lines = fileData.Split("\n"[0]);
+
+
+        for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
+        {
+            lineData = (lines[i].Trim()).Split(","[0]);
+            LifeLostDataReturn.x = float.Parse(lineData[1]);
+            LifeLostDataReturn.y = float.Parse(lineData[2]);
+            LifeLostDataReturn.z = float.Parse(lineData[3]);
+            LifeLostDataReturn.enemy = int.Parse(lineData[4]);
+
+            arrLifeLost.Add(LifeLostDataReturn);
+        }
+    }
+
+    void ReadSwitches()
+    {
+        string positionPath = Application.dataPath + "/CSV/" + "SwitchesTimeEvent.csv";
+
+        string fileData = System.IO.File.ReadAllText(positionPath.ToString());
+        string[] lines = fileData.Split("\n"[0]);
+
+
+        for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
+        {
+            lineData = (lines[i].Trim()).Split(","[0]);
+            SwitchesTimeDataReturn.current_switch_id = int.Parse(lineData[1]);
+            SwitchesTimeDataReturn.global_time = int.Parse(lineData[2]);
+
+            arrSwitchesTime.Add(SwitchesTimeDataReturn);
+        }
+    }
+
+    void Readkey()
+    {
+        string positionPath = Application.dataPath + "/CSV/" + "FindKeyEvent.csv";
+
+        string fileData = System.IO.File.ReadAllText(positionPath.ToString());
+        string[] lines = fileData.Split("\n"[0]);
+
+
+        for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
+        {
+            lineData = (lines[i].Trim()).Split(","[0]);
+            FindKeyDataReturn.global_time = float.Parse(lineData[1]);
+
+            arrFindKey.Add(FindKeyDataReturn);
+        }
+    }
+
+    void ReadFinish()
+    {
+        string positionPath = Application.dataPath + "/CSV/" + "TimetoFinish.csv";
+
+        string fileData = System.IO.File.ReadAllText(positionPath.ToString());
+        string[] lines = fileData.Split("\n"[0]);
+
+
+        for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
+        {
+            lineData = (lines[i].Trim()).Split(","[0]);
+            FinishDataReturn.global_time = float.Parse(lineData[1]);
+
+            arrFinish.Add(FinishDataReturn);
+        }
+    }
+
+    void Readpath()
+    {
+        string positionPath = Application.dataPath + "/CSV/" + "PlayerPathEvent.csv";
+
+        string fileData = System.IO.File.ReadAllText(positionPath.ToString());
+        string[] lines = fileData.Split("\n"[0]);
+
+
+        for (int i = 1; i < lines.Length - 1; i++) //i = 1 instead of 0 because we want to skip the headers
+        {
+            lineData = (lines[i].Trim()).Split(","[0]);
+            PathDataReturn.x = float.Parse(lineData[1]);
+            PathDataReturn.y = float.Parse(lineData[2]);
+            PathDataReturn.z = float.Parse(lineData[3]);
+            PathDataReturn.ex = float.Parse(lineData[4]);
+            PathDataReturn.ey = float.Parse(lineData[5]);
+            PathDataReturn.ez = float.Parse(lineData[6]);
+
+            arrPath.Add(PathDataReturn);
+        }
+    }
 }
