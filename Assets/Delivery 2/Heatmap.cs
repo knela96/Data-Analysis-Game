@@ -41,12 +41,11 @@ public class Heatmap : MonoBehaviour
     public void Awake()
     {
         heatmap_selector.onValueChanged.AddListener(delegate { reloadHeatmap(); });
+        heatmap_selector.onValueChanged.AddListener(delegate { reloadHeatmap(); });
         surface_selector.onValueChanged.AddListener(delegate { reloadHeatmap(); });
         enemy_selector.onValueChanged.AddListener(delegate { reloadHeatmap(); });
         reader = gameObject.GetComponent<Reader>();
-    }
-    void Start()
-    {
+
         GridSizeX = (int)(cubeSize * (float)GridSizeX);
         GridSizeY = (int)(cubeSize * (float)GridSizeY);
 
@@ -54,12 +53,26 @@ public class Heatmap : MonoBehaviour
 
         heatMapCube.transform.localScale = new Vector3(cubeSize, cubeSize, cubeSize);
     }
-
-    void reloadHeatmap()
+    void Start()
     {
+    }
+
+    public void clearMap()
+    {
+        foreach (GameObject obj in instancedCubes)
+        {
+            Destroy(obj);
+        }
+        instancedCubes.Clear();
+    }
+
+    public void reloadHeatmap()
+    {
+        gridArray = new int[GridSizeX, GridSizeY];
+
         CountEvents();
 
-        foreach (var obj in instancedCubes)
+        foreach (GameObject obj in instancedCubes)
         {
             Destroy(obj);
         }
