@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System;
 using System.Reflection;
+using UnityEditor;
 
 enum Table
 {
@@ -29,6 +30,11 @@ public class Writer : MonoBehaviour
 
     void Start()
     {
+        if (!AssetDatabase.IsValidFolder("Assets/CSV/"))
+        {
+            AssetDatabase.CreateFolder("Assets", "CSV");
+        }
+
         paths[(int)Table.SessionPlayer] = Application.dataPath + "/CSV/" + "SessionsPlayer.csv";
         paths[(int)Table.PlayerPositionEvent] = Application.dataPath + "/CSV/" + "PlayerPositionEvent.csv";
         paths[(int)Table.PlayerDeathEvent] = Application.dataPath + "/CSV/" + "PlayerDeathEvent.csv";
