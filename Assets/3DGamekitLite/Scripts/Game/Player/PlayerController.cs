@@ -21,6 +21,10 @@ namespace Gamekit3D
         public float maxTurnSpeed = 1200f;        // How fast Ellen turns when stationary.
         public float idleTimeout = 5f;            // How long before Ellen starts considering random idles.
         public bool canAttack;                    // Whether or not Ellen can swing her staff.
+        public delegate void PlayerPathEvent();
+        public static PlayerPathEvent playerPathEvent;
+        private Vector3 d_previous;
+
 
         public CameraSettings cameraSettings;            // Reference used to determine the camera's direction.
         public MeleeWeapon meleeWeapon;                  // Reference used to (de)activate the staff when attacking. 
@@ -205,6 +209,12 @@ namespace Gamekit3D
             TimeoutToIdle();
 
             m_PreviouslyGrounded = m_IsGrounded;
+
+            if (Vector3.Distance(transform.position, d_previous) >= 1)
+            {
+                d_previous = transform.position;
+                playerPathEvent?.Invoke();
+            }
         }
 
         // Called at the start of FixedUpdate to record the current state of the base layer of the animator.

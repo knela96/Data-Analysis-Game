@@ -19,6 +19,5 @@ public class ManageInputs : MonoBehaviour
     public void ReadInputValue(string i)
     {
         input = i;
-        Debug.Log(input);
     }
 }

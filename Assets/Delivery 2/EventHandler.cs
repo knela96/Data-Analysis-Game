@@ -37,6 +37,7 @@ public class EventHandler : MonoBehaviour
         InteractOnTrigger.SwitchTimerEvent += AddSwitchTimeEvent;
         InteractOnTrigger.LevelCompleteEvent += AddLevelCompleteEvent;
         InteractOnTrigger.KeyTimerEvent += AddKeyTimerEvent;
+        PlayerController.playerPathEvent += AddPlayerPathEvent;
     }
 
     private void OnDisable()
@@ -48,6 +49,7 @@ public class EventHandler : MonoBehaviour
         InteractOnTrigger.SwitchTimerEvent -= AddSwitchTimeEvent;
         InteractOnTrigger.LevelCompleteEvent -= AddLevelCompleteEvent;
         InteractOnTrigger.KeyTimerEvent -= AddKeyTimerEvent;
+        PlayerController.playerPathEvent -= AddPlayerPathEvent;
     }
 
     public void Awake()
@@ -67,7 +69,6 @@ public class EventHandler : MonoBehaviour
         }
 
         InvokeRepeating("UpdateInfoEvent", 0.0f, 0.3f);
-        InvokeRepeating("UpdatePathPosition", 0.0f, 0.3f);
     }
     void Update()
     {
@@ -77,12 +78,7 @@ public class EventHandler : MonoBehaviour
 
     void UpdateInfoEvent()
     {
-        // Calling this event every X seconds (in our case 3 seconds) to save the current position and create a path
        AddPlayerPositionEvent();
-    }
-    void UpdatePathPosition()
-    {
-        AddPlayerPathEvent();
     }
 
     void CreateLists()
@@ -90,8 +86,8 @@ public class EventHandler : MonoBehaviour
         events = new List<EventData>();
     }
     public void AddPlayerPathEvent()
-    {
-        SendEventData(new PlayerPathEvent(PlayerID, System.DateTime.Now, ellen.transform.position, new Vector3(camera.transform.eulerAngles.x, ellen.transform.eulerAngles.y, camera.transform.eulerAngles.z)));
+    {//orientation to camera
+        SendEventData(new PlayerPathEvent(PlayerID, System.DateTime.Now, ellen.transform.position, new Vector3(camera.transform.localEulerAngles.x, camera.transform.eulerAngles.y, camera.transform.localEulerAngles.z)));
     }
     public void AddPlayerPositionEvent()
     {

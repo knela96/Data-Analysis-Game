@@ -23,8 +23,6 @@ public class Heatmap : MonoBehaviour
 
     private Reader reader;
 
-    public List<PlayerPathEvent> paths = new List<PlayerPathEvent>();
-
     public Gradient ColorGradient;
 
     private float heatMaxValue = 0;
@@ -32,17 +30,18 @@ public class Heatmap : MonoBehaviour
 
     public GameObject arrow;
     public Color ArrowColor;
-    public int maxArrows = 200;
 
     public Dropdown heatmap_selector;
     public Dropdown surface_selector;
     public Dropdown enemy_selector;
+    public InputField maxArrows;
 
     public void Awake()
     {
         heatmap_selector.onValueChanged.AddListener(delegate { reloadHeatmap(); });
         surface_selector.onValueChanged.AddListener(delegate { reloadHeatmap(); });
         enemy_selector.onValueChanged.AddListener(delegate { reloadHeatmap(); });
+        maxArrows.onValueChanged.AddListener(delegate { reloadArrows(); });
 
         reader = gameObject.GetComponent<Reader>();
 
@@ -54,8 +53,7 @@ public class Heatmap : MonoBehaviour
         heatMapCube.transform.localScale = new Vector3(cubeSize, cubeSize, cubeSize);
     }
     void Start()
-    {
-    }
+    {}
 
     public void clearMap()
     {
@@ -64,6 +62,14 @@ public class Heatmap : MonoBehaviour
             Destroy(obj);
         }
         instancedCubes.Clear();
+    }
+    public void clearArrows()
+    {
+        foreach (GameObject obj in instancedArrows)
+        {
+            Destroy(obj);
+        }
+        instancedArrows.Clear();
     }
 
     public void reloadHeatmap()
@@ -75,6 +81,12 @@ public class Heatmap : MonoBehaviour
         clearMap();
 
         VisualizeGrid();
+    }
+    public void reloadArrows()
+    {
+        clearArrows();
+
+        VisualizeArrows();
     }
 
     private void SetValue(float x, float y)
@@ -191,23 +203,21 @@ public class Heatmap : MonoBehaviour
 
     void VisualizeArrows()
     {
-        //int index = paths.Count - maxArrows;
-        //index = Mathf.Max(index, 0);
-        //for (int i = index; i < paths.Count; ++i)
-        //{
-        //    Vector3 pos = paths[i].position;
-        //    if(i > 0)
-        //    {
-        //        Vector3 previous = paths[i - 1].position;
-        //        //Vector3 midpoint = new Vector3(previous.x + pos.x / 2, previous.y + pos.y / 2, previous.z + pos.z / 2);
-        //        //Gizmos.DrawLine(previous, pos);
-        //        pos.y = pos.y + 0.15f; 
-        //        GameObject go = Instantiate(arrow, pos, Quaternion.Euler(paths[i].orientation.x, paths[i].orientation.y, paths[i].orientation.z));
-        //        go.GetComponent<Renderer>().material.SetColor("_Color", ArrowColor);
-        //        instancedArrows.Add(go);
-        //    }
-        //}
-
+        int value = int.Parse(maxArrows.text.ToString());
+        int index = reader.arrPath.Count - value;
+        index = Mathf.Max(index, 0);
+        for (int i = index; i < reader.arrPath.Count; ++i)
+        {
+            Vector3 pos = new Vector3(reader.arrPath[i].x, reader.arrPath[i].y, reader.arrPath[i].z);
+            Vector3 rot = new Vector3(0, reader.arrPath[i].ey + 90, reader.arrPath[i].ex);
+            if (i > 0)
+            {
+                pos.y = pos.y + 0.15f;
+                GameObject go = Instantiate(arrow, pos, Quaternion.Euler(rot.x, rot.y, rot.z));
+                go.GetComponent<Renderer>().material.SetColor("_Color", ArrowColor);
+                instancedArrows.Add(go);
+            }
+        }
     }
 
     void SpawnCube(int x, int y, int count)
@@ -239,21 +249,6 @@ public class Heatmap : MonoBehaviour
 
     void Update()
     {
-        //if (Vector3.Distance(player_transform.position,d_previous) >= 1)//Recalculate cubes
-        //{
-        //    d_previous = player_transform.position;
-        //    PlayerPathEvent pl = new PlayerPathEvent(0, time, player_transform.position, new Vector3(player_transform.eulerAngles.x, player_transform.eulerAngles.y + 90, player_transform.eulerAngles.z));
-        //    paths.Add(pl);
-
-        //}
-
-        //foreach (var obj in instancedArrows)
-        //{
-        //    Destroy(obj);
-        //}
-        //instancedArrows.Clear();
-
-        //VisualizeArrows();
 
     }
 
