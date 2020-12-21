@@ -30,7 +30,7 @@ public class Writer : MonoBehaviour
 
     void Start()
     {
-        if (!AssetDatabase.IsValidFolder("Assets/CSV/"))
+        if (!AssetDatabase.IsValidFolder("Assets/CSV"))
         {
             AssetDatabase.CreateFolder("Assets", "CSV");
         }
