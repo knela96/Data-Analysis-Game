@@ -48,8 +48,6 @@ public class Heatmap : MonoBehaviour
         GridSizeY = (int)(cubeSize * (float)GridSizeY);
 
         gridArray = new int[GridSizeX, GridSizeY];
-
-        heatMapCube.transform.localScale = new Vector3(cubeSize, cubeSize, cubeSize);
     }
     void Start()
     {}
@@ -74,6 +72,8 @@ public class Heatmap : MonoBehaviour
     public void reloadHeatmap()
     {
         gridArray = new int[GridSizeX, GridSizeY];
+
+        heatMapCube.transform.localScale = new Vector3(cubeSize, cubeSize, cubeSize);
 
         CountEvents();
 
