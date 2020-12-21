@@ -245,11 +245,4 @@ public class Heatmap : MonoBehaviour
         return 0;
     }
 
-    
-
-    void Update()
-    {
-
-    }
-
 }
