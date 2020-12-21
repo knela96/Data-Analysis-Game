@@ -41,9 +41,9 @@ public class Heatmap : MonoBehaviour
     public void Awake()
     {
         heatmap_selector.onValueChanged.AddListener(delegate { reloadHeatmap(); });
-        heatmap_selector.onValueChanged.AddListener(delegate { reloadHeatmap(); });
         surface_selector.onValueChanged.AddListener(delegate { reloadHeatmap(); });
         enemy_selector.onValueChanged.AddListener(delegate { reloadHeatmap(); });
+
         reader = gameObject.GetComponent<Reader>();
 
         GridSizeX = (int)(cubeSize * (float)GridSizeX);
@@ -72,11 +72,7 @@ public class Heatmap : MonoBehaviour
 
         CountEvents();
 
-        foreach (GameObject obj in instancedCubes)
-        {
-            Destroy(obj);
-        }
-        instancedCubes.Clear();
+        clearMap();
 
         VisualizeGrid();
     }
@@ -95,10 +91,10 @@ public class Heatmap : MonoBehaviour
 
     public void CountEvents()
     {
+        float x = 0, y = 0;
         switch ((EventFilter)heatmap_selector.value)
         {
             case EventFilter.Position:
-                float x = 0, y = 0;
                 for (int i = 0; i < reader.arrPosition.Count; i++)
                 {
                     EventData eventData = reader.arrPosition[i];
@@ -107,70 +103,78 @@ public class Heatmap : MonoBehaviour
                     SetValue(x, y);
                 }
                 break;
+            case EventFilter.PlayerDeath:
+                for (int i = 0; i < reader.arrDeath.Count; i++)
+                {
+                    EventData eventData = reader.arrDeath[i];
+                    if (((PlayerDeathEvent)eventData).enemy == enemy_selector.value ||
+                        enemy_selector.value == 0)
+                    {
+                        x = ((PlayerDeathEvent)eventData).x;
+                        y = ((PlayerDeathEvent)eventData).z;
+                        SetValue(x, y);
+                    }
+                }
+                break;
+            case EventFilter.LifeLost:
+                for (int i = 0; i < reader.arrLifeLost.Count; i++)
+                {
+                    EventData eventData = reader.arrLifeLost[i];
+                    if (((PlayerLifeLostEvent)eventData).enemy == enemy_selector.value ||
+                        enemy_selector.value == 0)
+                    {
+                        x = ((PlayerLifeLostEvent)eventData).x;
+                        y = ((PlayerLifeLostEvent)eventData).z;
+                        SetValue(x, y);
+                    }
+                }
+                break;
+            case EventFilter.Fall:
+                for (int i = 0; i < reader.arrFalls.Count; i++)
+                {
+                    EventData eventData = reader.arrFalls[i];
+                    if (((PlayerFallsEvent)eventData).surface == surface_selector.value ||
+                       surface_selector.value == 0)
+                    {
+                        x = ((PlayerFallsEvent)eventData).x;
+                        y = ((PlayerFallsEvent)eventData).z;
+                        SetValue(x, y);
+                    }
+                }
+                break;
+            case EventFilter.EnemyDeath:
+                for (int i = 0; i < reader.arrEnemyKills.Count; i++)
+                {
+                    EventData eventData = reader.arrEnemyKills[i];
+                    if (((EnemyKillsEvent)eventData).enemy == enemy_selector.value ||
+                        enemy_selector.value == 0)
+                    {
+                        x = ((EnemyKillsEvent)eventData).x;
+                        y = ((EnemyKillsEvent)eventData).z;
+                        SetValue(x, y);
+                    }
+                }
+                break;
         }
 
-        // Change dynamically but affects all data
-
+        // Change dynamically color
         int c = 0;
         heatMaxValue = 0;
-
-        for (int x = 0; x < GridSizeX; x++)
+        heatMinValue = 0;
+        for (int i = 0; i < GridSizeX; i++)
         {
-            for (int y = 0; y < GridSizeY; y++)
+            for (int j = 0; j < GridSizeY; j++)
             {
-                if (gridArray[x, y] > 0)
+                if (gridArray[i, j] > 0)
                 {
-                    if(gridArray[x, y] >= heatMaxValue)
-                        heatMaxValue = gridArray[x, y];
-                    else if(heatMinValue > gridArray[x, y] || heatMinValue == 0)
-                        heatMinValue = gridArray[x, y];
+                    if(gridArray[i, j] >= heatMaxValue)
+                        heatMaxValue = gridArray[i, j];
+                    else if(heatMinValue > gridArray[i, j] || heatMinValue == 0)
+                        heatMinValue = gridArray[i, j];
                 }
             }
         }
         heatMaxValue = heatMaxValue - heatMinValue;
-
-        //for (int i = 0; i < EventsList.Count; i++)
-        //{
-        //    EventData eventData = EventsList[i];
-        //    if (heatmap_selector.value == (int)current_filter)
-        //    {
-        //        float x = 0, y = 0;
-        //        switch ((EventFilter)heatmap_selector.value)
-        //        {
-        //            case (EventFilter.Position):
-        //                x = ((PlayerPositionEvent)eventData).x;
-        //                y = ((PlayerPositionEvent)eventData).z;
-        //                break;
-        //            case (EventFilter.PlayerDeath):
-        //                x = ((PlayerDeathEvent)eventData).x;
-        //                y = ((PlayerDeathEvent)eventData).z;
-        //                break;
-        //            case (EventFilter.Fall):
-        //                if (surface_selector.value == ((PlayerFallsEvent)eventData).surface || ((SURFACE_TYPE)surface_selector.value == SURFACE_TYPE.ALL))
-        //                {
-        //                    x = ((PlayerFallsEvent)eventData).x;
-        //                    y = ((PlayerFallsEvent)eventData).z;
-        //                }
-        //                break;
-        //            case (EventFilter.LifeLost):
-        //                if (enemy_selector.value == ((PlayerLifeLostEvent)eventData).enemy || ((ENEMY_TYPE)enemy_selector.value == ENEMY_TYPE.ALL))
-        //                {
-        //                    x = ((PlayerLifeLostEvent)eventData).x;
-        //                    y = ((PlayerLifeLostEvent)eventData).z;
-        //                }
-        //                break;
-        //            case (EventFilter.EnemyDeath):
-        //                if (enemy_selector.value == ((EnemyKillsEvent)eventData).enemy || ((ENEMY_TYPE)enemy_selector.value == ENEMY_TYPE.ALL))
-        //                {
-        //                    x = ((EnemyKillsEvent)eventData).x;
-        //                    y = ((EnemyKillsEvent)eventData).z;
-        //                }
-        //                break;
-        //        };
-        //    }
-        //}
-
-
     }
 
     void VisualizeGrid()

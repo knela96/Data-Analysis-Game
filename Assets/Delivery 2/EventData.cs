@@ -9,10 +9,9 @@ public enum EventFilter
     None = -1,
     Position,
     PlayerDeath,
-    EnemyDeath,
-    LifeLost,
     Fall,
-    Objects
+    LifeLost,
+    EnemyDeath
 };
 public enum ENEMY_TYPE
 {
