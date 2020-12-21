@@ -5,17 +5,18 @@ using UnityEngine;
 
 public class EventHandler : MonoBehaviour
 {
-    public GameObject ellen;
-    public GameObject camera;
+    private GameObject ellen;
+    private GameObject camera;
     public static EventData eventdata;
     public static EventHandler eventhandler;
 
     public List<EventData> events;
 
-    public float timeStart = 0;
-
+    private float timeStart = 0;
+    private System.DateTime timeAwake;
 
     public uint PlayerID = 0;
+    public uint SessionID = 0;
 
 
     public void SendEventData(object eventData)
@@ -38,6 +39,10 @@ public class EventHandler : MonoBehaviour
         InteractOnTrigger.LevelCompleteEvent += AddLevelCompleteEvent;
         InteractOnTrigger.KeyTimerEvent += AddKeyTimerEvent;
         PlayerController.playerPathEvent += AddPlayerPathEvent;
+
+        timeAwake = System.DateTime.Now;
+        //PlayerID = (uint)Random.Range(0, 99999);
+        //SessionID = (uint)Random.Range(0, 99999);
     }
 
     private void OnDisable()
@@ -50,13 +55,14 @@ public class EventHandler : MonoBehaviour
         InteractOnTrigger.LevelCompleteEvent -= AddLevelCompleteEvent;
         InteractOnTrigger.KeyTimerEvent -= AddKeyTimerEvent;
         PlayerController.playerPathEvent -= AddPlayerPathEvent;
+
+        AddSessionPlayerEvent();
     }
 
     public void Awake()
     {
         ellen = GameObject.FindGameObjectWithTag("Player");
         camera = GameObject.FindGameObjectWithTag("MainCamera");
-        PlayerID = (uint)Random.Range(0, 99999);
     }
 
     void Start()
@@ -68,7 +74,7 @@ public class EventHandler : MonoBehaviour
             eventhandler = this;
         }
 
-        InvokeRepeating("UpdateInfoEvent", 0.0f, 0.3f);
+        InvokeRepeating("UpdateInfoEvent", 0.0f, 0.15f);
     }
     void Update()
     {
@@ -85,52 +91,57 @@ public class EventHandler : MonoBehaviour
     {
         events = new List<EventData>();
     }
+
+    public void AddSessionPlayerEvent()
+    {//orientation to camera
+        SendEventData(new SessionPlayerEvent(SessionID, PlayerID, timeAwake, System.DateTime.Now));
+    }
     public void AddPlayerPathEvent()
     {//orientation to camera
-        SendEventData(new PlayerPathEvent(PlayerID, System.DateTime.Now, ellen.transform.position, new Vector3(camera.transform.localEulerAngles.x, camera.transform.eulerAngles.y, camera.transform.localEulerAngles.z)));
+        SendEventData(new PlayerPathEvent(SessionID,PlayerID, System.DateTime.Now, ellen.transform.position, new Vector3(camera.transform.localEulerAngles.x, camera.transform.eulerAngles.y, camera.transform.localEulerAngles.z)));
     }
     public void AddPlayerPositionEvent()
     {
-        SendEventData(new PlayerPositionEvent(PlayerID, System.DateTime.Now, ellen.transform.position));
+        SendEventData(new PlayerPositionEvent(SessionID, PlayerID, System.DateTime.Now, ellen.transform.position));
     }
 
     public void AddPlayerDeathEvent(ENEMY_TYPE type)
     {
-        SendEventData(new PlayerDeathEvent(PlayerID, System.DateTime.Now, ellen.transform.position,type));
+        SendEventData(new PlayerDeathEvent(SessionID, PlayerID, System.DateTime.Now, ellen.transform.position,type));
     }
     public void AddEnemyKilledEvent(GameObject enemy, ENEMY_TYPE type)
     {
-        SendEventData(new EnemyKillsEvent(PlayerID, System.DateTime.Now, enemy.transform.position, type));
+        SendEventData(new EnemyKillsEvent(SessionID, PlayerID, System.DateTime.Now, enemy.transform.position, type));
     }
 
     public void AddKeyTimerEvent(float time)
     {
-        SendEventData(new FindKeyEvent(PlayerID, System.DateTime.Now, time));
+        SendEventData(new FindKeyEvent(SessionID, PlayerID, System.DateTime.Now, time));
     }
 
     public void AddPlayerLifeLostEvent(ENEMY_TYPE type)
     {
-        SendEventData(new PlayerLifeLostEvent(PlayerID, System.DateTime.Now, ellen.transform.position, type));
+        SendEventData(new PlayerLifeLostEvent(SessionID, PlayerID, System.DateTime.Now, ellen.transform.position, type));
     }
 
     public void AddPlayerFallEvent(SURFACE_TYPE type)
     {
-        SendEventData(new PlayerFallsEvent(PlayerID, System.DateTime.Now, ellen.transform.position, type));
+        SendEventData(new PlayerFallsEvent(SessionID, PlayerID, System.DateTime.Now, ellen.transform.position, type));
     }
 
     public void AddSwitchTimeEvent(int switch_id, float time)
     {
-        SendEventData(new SwitchesTimeEvent(PlayerID, System.DateTime.Now, switch_id, time));
+        SendEventData(new SwitchesTimeEvent(SessionID, PlayerID, System.DateTime.Now, switch_id, time));
     }
 
     public void AddLevelCompleteEvent(float time)
     {
-        SendEventData(new TimeToFinishEvent(PlayerID, System.DateTime.Now, time));
+        SendEventData(new TimeToFinishEvent(SessionID, PlayerID, System.DateTime.Now, time));
     }
 
     public void AddFindKeyEvent(float time)
     {
-        SendEventData(new FindKeyEvent(PlayerID, System.DateTime.Now, time));
+        SendEventData(new FindKeyEvent(SessionID, PlayerID, System.DateTime.Now, time));
     }
 
     public void StartTimer()

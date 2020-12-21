@@ -9,11 +9,10 @@ public class Heatmap : MonoBehaviour
 {
     int GridSizeX = 200, GridSizeY = 200;
     float map_originX = -34, map_originY = -40;
-    public float cubeSize = 1;
     int[,] gridArray;
     public GameObject heatMapCube;
-    public float transparency = 0.5f;
-    Vector3 d_previous;
+    public float cubeSize = 1;
+    public float transparency = 0.8f;
 
     //--------------------------
     [HideInInspector]
@@ -101,9 +100,22 @@ public class Heatmap : MonoBehaviour
         }
     }
 
+    private void OnValidate()
+    {
+        if (reader != null)
+        {
+            if (instancedCubes.Count > 0)
+                reloadHeatmap();
+
+            if (instancedArrows.Count > 0)
+                reloadArrows();
+        }
+    }
+
     public void CountEvents()
     {
         float x = 0, y = 0;
+
         switch ((EventFilter)heatmap_selector.value)
         {
             case EventFilter.Position:
@@ -114,6 +126,7 @@ public class Heatmap : MonoBehaviour
                     y = ((PlayerPositionEvent)eventData).z;
                     SetValue(x, y);
                 }
+                
                 break;
             case EventFilter.PlayerDeath:
                 for (int i = 0; i < reader.arrDeath.Count; i++)

@@ -27,19 +27,22 @@ public enum SURFACE_TYPE
 }
 public class EventData
 {
-    public static EventData eventdata;
+    //public static EventData eventdata;
     public uint player_id;
+    public uint session_id;
     public DateTime timestamp;
 
     public EventData()
     {
         player_id = 0;
+        session_id = 0;
         timestamp = System.DateTime.Now;
     }
 
-    public EventData(uint id, DateTime time)
+    public EventData(uint _sessions_id,uint _player_id, DateTime time)
     {
-        player_id = id;
+        session_id = _sessions_id;
+        player_id = _player_id;
         timestamp = time;
     }
 
@@ -58,7 +61,7 @@ public class PlayerPositionEvent : EventData     // Player current position | Al
         z = 0;
     }
 
-    public PlayerPositionEvent(uint ev, DateTime time, Vector3 pos) : base(ev, time)
+    public PlayerPositionEvent(uint session_id, uint player_id, DateTime time, Vector3 pos) : base(session_id,player_id, time)
     {
         x = pos.x;
         y = pos.y;
@@ -76,7 +79,7 @@ public class PlayerDeathEvent : EventData    // Player death position | Also use
         enemy = 0;
     }
 
-    public PlayerDeathEvent(uint ev, DateTime time, Vector3 pos, ENEMY_TYPE enemy) : base(ev, time)
+    public PlayerDeathEvent(uint session_id, uint player_id, DateTime time, Vector3 pos, ENEMY_TYPE enemy) : base(session_id, player_id, time)
     {
         x = pos.x;
         y = pos.y;
@@ -96,7 +99,7 @@ public class PlayerFallsEvent : EventData    // Player fall position & type of s
         surface = 0;
     }
 
-    public PlayerFallsEvent(uint ev, DateTime time, Vector3 pos, SURFACE_TYPE surface_name) : base(ev, time)
+    public PlayerFallsEvent(uint session_id, uint player_id, DateTime time, Vector3 pos, SURFACE_TYPE surface_name) : base(session_id, player_id, time)
     {
         x = pos.x;
         y = pos.y;
@@ -116,7 +119,7 @@ public class EnemyKillsEvent : EventData    // Enemy position where killed by th
         enemy = 0;
     }
 
-    public EnemyKillsEvent(uint ev, DateTime time, Vector3 enemy_pos, ENEMY_TYPE enemy_name) : base(ev, time)
+    public EnemyKillsEvent(uint session_id, uint player_id, DateTime time, Vector3 enemy_pos, ENEMY_TYPE enemy_name) : base(session_id, player_id, time)
     {
         x = enemy_pos.x;
         y = enemy_pos.y;
@@ -136,7 +139,7 @@ public class PlayerLifeLostEvent : EventData    // Player lost life position & e
         enemy = 0;
     }
 
-    public PlayerLifeLostEvent(uint ev, DateTime time, Vector3 pos, ENEMY_TYPE enemy_name) : base(ev, time)
+    public PlayerLifeLostEvent(uint session_id, uint player_id, DateTime time, Vector3 pos, ENEMY_TYPE enemy_name) : base(session_id, player_id, time)
     {
         x = pos.x;
         y = pos.y;
@@ -148,7 +151,7 @@ public class PlayerLifeLostEvent : EventData    // Player lost life position & e
 }
 public class SwitchesTimeEvent : EventData    // Time that player takes to press each switch
 {
-    public SwitchesTimeEvent(uint ev, DateTime time, int switch_id, float ev_time) : base(ev, time)
+    public SwitchesTimeEvent(uint session_id, uint player_id, DateTime time, int switch_id, float ev_time) : base(session_id, player_id, time)
     {
         current_switch_id = switch_id;
         global_time = ev_time;
@@ -158,7 +161,7 @@ public class SwitchesTimeEvent : EventData    // Time that player takes to press
 }
 public class FindKeyEvent : EventData   // Time to find the key
 {
-    public FindKeyEvent(uint ev, DateTime time, float ev_time) : base(ev, time)
+    public FindKeyEvent(uint session_id, uint player_id, DateTime time, float ev_time) : base(session_id, player_id, time)
     {
         global_time = ev_time;
     }
@@ -166,7 +169,7 @@ public class FindKeyEvent : EventData   // Time to find the key
 }
 public class TimeToFinishEvent : EventData   // Time to finish the level
 {
-    public TimeToFinishEvent(uint ev, DateTime time, float ev_time) : base(ev, time)
+    public TimeToFinishEvent(uint session_id, uint player_id, DateTime time, float ev_time) : base(session_id, player_id, time)
     {
         global_time = ev_time;
     }
@@ -185,7 +188,7 @@ public class PlayerPathEvent : EventData    // Player position and rotation for 
         ez = 0;
     }
 
-    public PlayerPathEvent(uint ev, DateTime time, Vector3 pos, Vector3 orient) : base(ev, time)
+    public PlayerPathEvent(uint session_id, uint player_id, DateTime time, Vector3 pos, Vector3 orient) : base(session_id, player_id, time)
     {
         x = pos.x;
         y = pos.y;
@@ -197,4 +200,17 @@ public class PlayerPathEvent : EventData    // Player position and rotation for 
     }
     public float x, y, z;
     public float ex, ey, ez;
+}
+
+public class SessionPlayerEvent    // Player position and rotation for debug path
+{
+    public SessionPlayerEvent(uint session, uint player, DateTime start, DateTime end)
+    {
+        SessionID = session;
+        PlayerID = player;
+        this.start = start;
+        this.end = end;
+    }
+    public uint SessionID, PlayerID;
+    public DateTime start, end;
 }
