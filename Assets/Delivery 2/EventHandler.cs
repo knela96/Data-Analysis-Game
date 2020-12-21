@@ -16,7 +16,7 @@ public class EventHandler : MonoBehaviour
     private System.DateTime timeAwake;
 
     public uint PlayerID = 0;
-    public uint SessionID = 0;
+    private uint SessionID = 0;
 
 
     public void SendEventData(object eventData)
@@ -41,8 +41,16 @@ public class EventHandler : MonoBehaviour
         PlayerController.playerPathEvent += AddPlayerPathEvent;
 
         timeAwake = System.DateTime.Now;
-        //PlayerID = (uint)Random.Range(0, 99999);
-        //SessionID = (uint)Random.Range(0, 99999);
+    }
+
+    private void OnValidate()
+    {
+        PlayerID = (uint)Mathf.Clamp((int)PlayerID, 0, 99999);
+    }
+
+    private void OnApplicationQuit()
+    {
+        AddSessionPlayerEvent();
     }
 
     private void OnDisable()
@@ -56,13 +64,14 @@ public class EventHandler : MonoBehaviour
         InteractOnTrigger.KeyTimerEvent -= AddKeyTimerEvent;
         PlayerController.playerPathEvent -= AddPlayerPathEvent;
 
-        AddSessionPlayerEvent();
     }
 
     public void Awake()
     {
         ellen = GameObject.FindGameObjectWithTag("Player");
         camera = GameObject.FindGameObjectWithTag("MainCamera");
+
+        SessionID = (uint)Random.Range(0, 99999);
     }
 
     void Start()
