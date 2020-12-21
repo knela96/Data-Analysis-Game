@@ -9,6 +9,9 @@ public class ManageDropdowns : MonoBehaviour
     public GameObject toggle_arrows;
     public GameObject enemy;
     public GameObject surface;
+    public EventFilter currentItem;
+
+
 
     public void Start()
     {
@@ -18,11 +21,20 @@ public class ManageDropdowns : MonoBehaviour
         surface.SetActive(false);
         Manage(0);
     }
+    public void Update()
+    {
+        if (toggle_heat.GetComponent<Toggle>().isOn == false)
+        {
+            enemy.SetActive(false);
+            surface.SetActive(false);
+        }
+    }
 
     public void Manage(int val)
     {
         if (val == 0)
         {
+            currentItem = EventFilter.Position;
             surface.SetActive(false);
             enemy.SetActive(false);
         }
