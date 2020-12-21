@@ -94,7 +94,7 @@ public class Heatmap : MonoBehaviour
         int newY = (int)(y / cubeSize - map_originY / cubeSize);
 
 
-        if (newX > 0 && newY > 0 && newX < GridSizeX && newY < GridSizeY)
+        if (newX >= 0 && newY >= 0 && newX < GridSizeX && newY < GridSizeY)
         {
             gridArray[newX, newY]++;
         }
